@@ -2,6 +2,7 @@ import asyncHandler from '../utils/handleAsync.js';
 import { AppError } from '../middleware/errorMiddleware.js';
 import Contact from '../models/Contact.js';
 import logger from '../utils/logger.js';
+import { sendVerificationEmail } from '../config/email.js';
 
 /**
  * @desc    Create new contact message
@@ -271,4 +272,59 @@ export const getContactStats = asyncHandler(async (req, res) => {
       byStatus: stats,
     },
   });
+});
+
+/**
+ * @desc    Send maintenance verification code to admin email
+ * @route   POST /api/contacts/send-maintenance-code
+ * @access  Public (but only sends to specific admin email)
+ */
+export const sendMaintenanceCode = asyncHandler(async (req, res) => {
+  const { email, code } = req.body;
+  
+  // Security: Only allow sending to admin email
+  const ADMIN_EMAIL = 'ugwanezav@gmail.com';
+  
+  if (email !== ADMIN_EMAIL) {
+    throw new AppError('Invalid email address', 403);
+  }
+  
+  if (!code || code.length !== 6) {
+    throw new AppError('Invalid verification code', 400);
+  }
+  
+  try {
+    // Send actual email with verification code
+    logger.info(`🔐 Sending maintenance verification code to ${email}: ${code}`);
+    
+    // Send email using nodemailer
+    await sendVerificationEmail(email, code);
+    
+    // Log to server console as well
+    console.log(`
+╔════════════════════════════════════════╗
+║  MAINTENANCE VERIFICATION CODE         ║
+╠════════════════════════════════════════╣
+║                                        ║
+║  ✅ EMAIL SENT SUCCESSFULLY!           ║
+║                                        ║
+║  Code: ${code}                         ║
+║  To: ${email}              ║
+║  Valid for: 5 minutes                  ║
+║                                        ║
+║  📧 Check your email inbox!            ║
+║                                        ║
+╚════════════════════════════════════════╝
+    `);
+    
+    res.status(200).json({
+      success: true,
+      message: `Verification code sent to ${email}`,
+      info: 'Check your email inbox for the 6-digit verification code'
+    });
+  } catch (error) {
+    logger.error(`❌ Failed to send verification code: ${error.message}`);
+    console.error('Email error details:', error);
+    throw new AppError('Failed to send verification code. Please try again.', 500);
+  }
 });

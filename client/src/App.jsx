@@ -82,20 +82,26 @@ const MaintenanceModeWrapper = ({ children }) => {
       
       console.log('🔑 Bypass Status:', { userIsAdmin, hasValidBypassKeyword });
       
-      // If user is admin but no bypass keyword, show prompt
-      if (userIsAdmin && !hasValidBypassKeyword) {
-        console.log('✅ Showing keyword prompt for admin');
-        // Small delay to ensure maintenance page renders first
-        setTimeout(() => {
-          setShowKeywordPrompt(true);
-          console.log('🚀 Keyword prompt state set to TRUE');
-        }, 200);
+      // ⚠️ SECURITY: NO ONE gets through without bypass keyword
+      // Even admins must enter the keyword
+      if (!hasValidBypassKeyword) {
+        console.log('🚫 No valid bypass - maintenance page required');
+        console.log('🔐 User must enter bypass keyword to access site');
+        setShowKeywordPrompt(false); // Don't auto-show, let them click button
+        
+        // Clear any existing bypass to ensure fresh check
+        sessionStorage.removeItem('maintenanceBypass');
+        sessionStorage.removeItem('bypassTime');
       } else {
+        console.log('✅ Bypass granted - site accessible');
         setShowKeywordPrompt(false);
       }
     } else {
       setBypassGranted(false);
       setShowKeywordPrompt(false);
+      // Clear bypass when maintenance mode is disabled
+      sessionStorage.removeItem('maintenanceBypass');
+      sessionStorage.removeItem('bypassTime');
     }
   }, [isMaintenanceMode, userIsAdmin]);
 

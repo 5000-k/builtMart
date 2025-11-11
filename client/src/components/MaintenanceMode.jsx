@@ -139,6 +139,14 @@ const MaintenanceMode = () => {
 
           {/* Admin Access Button */}
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 rounded-lg p-4 mb-3 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400">
+                <Lock size={14} className="flex-shrink-0 mt-0.5" />
+                <p>
+                  <strong className="text-gray-900 dark:text-white">Administrators:</strong> You must enter the security bypass keyword to access the admin panel during maintenance mode.
+                </p>
+              </div>
+            </div>
             <button
               onClick={() => {
                 console.log('🔘 Admin Access button clicked!');
@@ -146,14 +154,14 @@ const MaintenanceMode = () => {
                 const event = new CustomEvent('showAdminPrompt');
                 window.dispatchEvent(event);
               }}
-              className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-semibold px-6 py-3 rounded-lg transition-all flex items-center justify-center gap-2 group"
+              className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-semibold px-6 py-3 rounded-lg transition-all flex items-center justify-center gap-2 group shadow-lg hover:shadow-xl"
             >
               <Shield size={20} className="group-hover:rotate-12 transition-transform" />
-              <span>Admin Access</span>
+              <span>Administrator Access</span>
               <Lock size={16} />
             </button>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 text-center">
-              Enter security keyword to access
+              Authorized personnel only • Keyword required
             </p>
           </div>
 

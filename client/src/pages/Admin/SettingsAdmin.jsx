@@ -31,7 +31,7 @@ const SettingsAdmin = () => {
         const response = await axiosClient.get('/settings');
         if (response.data.success) {
           const apiSettings = response.data.data.settings;
-          setSettings({
+          const formattedSettings = {
             siteName: apiSettings.siteName,
             siteDescription: apiSettings.siteDescription,
             contactEmail: apiSettings.contactEmail,
@@ -44,7 +44,15 @@ const SettingsAdmin = () => {
             freeShippingThreshold: apiSettings.freeShippingThreshold.toString(),
             emailFrom: apiSettings.emailFrom,
             maintenanceMode: apiSettings.maintenanceMode,
-          });
+          };
+          
+          setSettings(formattedSettings);
+          
+          // ⚡ Save maintenance mode to localStorage on load
+          localStorage.setItem('adminSettings', JSON.stringify({ 
+            maintenanceMode: apiSettings.maintenanceMode 
+          }));
+          console.log('💾 Initial settings loaded to localStorage');
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
@@ -67,6 +75,7 @@ const SettingsAdmin = () => {
     // Update state immediately
     setSettings(prev => ({ ...prev, maintenanceMode: checked }));
     setMaintenanceSaving(true);
+    setMaintenanceSaved(false);
     
     try {
       // Save to database via API
@@ -78,16 +87,25 @@ const SettingsAdmin = () => {
         freeShippingThreshold: parseFloat(settings.freeShippingThreshold),
       });
       
+      // ⚡ CRITICAL: Save to localStorage for real-time detection
+      const currentSettings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+      const updatedSettings = { ...currentSettings, maintenanceMode: checked };
+      localStorage.setItem('adminSettings', JSON.stringify(updatedSettings));
+      console.log('💾 Saved to localStorage:', updatedSettings);
+      
       // Show success indicator
       setMaintenanceSaving(false);
       setMaintenanceSaved(true);
       
-      // Clear success after 2 seconds
+      // Clear success after 3 seconds (increased from 2)
       setTimeout(() => {
         setMaintenanceSaved(false);
-      }, 2000);
+      }, 3000);
       
-      toast.success(`Maintenance mode ${checked ? 'enabled' : 'disabled'}`);
+      toast.success(`Maintenance mode ${checked ? 'enabled' : 'disabled'}`, {
+        position: 'top-right',
+        autoClose: 2000,
+      });
       console.log('✅ Maintenance mode updated:', checked ? 'ON' : 'OFF');
     } catch (error) {
       setMaintenanceSaving(false);
@@ -192,26 +210,35 @@ const SettingsAdmin = () => {
               </div>
             </div>
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="flex items-start gap-3">
+              <div className={`flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
+                maintenanceSaved 
+                  ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800' 
+                  : 'bg-gray-50 dark:bg-gray-800 border-2 border-transparent'
+              }`}>
+                <div className="flex items-start gap-3 flex-1">
                   <input 
                     type="checkbox" 
                     name="maintenanceMode" 
                     checked={settings.maintenanceMode} 
                     onChange={handleMaintenanceModeChange}
-                    className="mt-1 w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
+                    disabled={maintenanceSaving}
+                    className="mt-1 w-5 h-5 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   />
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium text-gray-900 dark:text-white">Maintenance Mode</span>
                       {maintenanceSaving && (
-                        <span className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
-                          <span className="animate-spin">⏳</span> Saving...
+                        <span className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-1.5 animate-pulse">
+                          <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Saving...
                         </span>
                       )}
                       {maintenanceSaved && (
-                        <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                          <CheckCircle size={14} /> Saved!
+                        <span className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1.5 font-semibold animate-in fade-in zoom-in duration-300">
+                          <CheckCircle size={16} className="animate-bounce" /> Saved!
                         </span>
                       )}
                     </div>

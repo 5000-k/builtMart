@@ -8,6 +8,7 @@ import {
   deleteContact,
   getContactStats,
   getMyMessages,
+  sendMaintenanceCode,
 } from '../controllers/contact.controller.js';
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
 import validate from '../middleware/validateMiddleware.js';
@@ -21,8 +22,14 @@ const contactValidation = [
   body('message').trim().notEmpty().withMessage('Message is required'),
 ];
 
+const maintenanceCodeValidation = [
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('code').isLength({ min: 6, max: 6 }).isNumeric().withMessage('Code must be 6 digits'),
+];
+
 // Public routes
 router.post('/', contactValidation, validate, createContact);
+router.post('/send-maintenance-code', maintenanceCodeValidation, validate, sendMaintenanceCode);
 
 // User routes (authenticated)
 router.get('/my-messages', protect, getMyMessages);

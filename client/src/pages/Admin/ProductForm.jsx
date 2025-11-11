@@ -570,28 +570,6 @@ const ProductForm = () => {
           {/* URL Mode */}
           {uploadMode === 'url' && (
             <div className="space-y-4">
-              {/* Image URL Instructions */}
-              <div className="p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800">
-                <h3 className="font-semibold text-primary-800 dark:text-primary-300 mb-2 flex items-center gap-2">
-                  <ImageIcon size={18} />
-                  How to Add Product Images
-                </h3>
-                <div className="text-sm text-primary-700 dark:text-primary-400 space-y-2">
-                  <p><strong>Free Stock Images:</strong></p>
-                  <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li><strong>Unsplash:</strong> <a href="https://unsplash.com/s/photos/tools" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary-600">unsplash.com/s/photos/tools</a></li>
-                    <li><strong>Pexels:</strong> <a href="https://www.pexels.com/search/hardware-tools/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary-600">pexels.com</a></li>
-                    <li><strong>Pixabay:</strong> <a href="https://pixabay.com/images/search/tools/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary-600">pixabay.com</a></li>
-                  </ul>
-                  <p className="mt-2"><strong>How to get image URL:</strong></p>
-                  <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>Find your image on Unsplash/Pexels</li>
-                    <li>Right-click on the image → "Copy image address"</li>
-                    <li>Paste the URL below</li>
-                  </ol>
-                </div>
-              </div>
-
               {imageUrls.map((url, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex gap-2">

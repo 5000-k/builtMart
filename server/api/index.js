@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import app from '../app.js';
 import connectDB from '../config/db.js';
 import { configureCloudinary } from '../config/cloudinary.js';
-import { configurePaddle } from '../config/paddle.js';
 import logger from '../utils/logger.js';
 
 // Load environment variables
@@ -31,7 +30,6 @@ async function initializeServices() {
     try {
       await connectDB();
       configureCloudinary();
-      configurePaddle();
       dbInitialized = true;
       logger.info('Services initialized successfully');
     } catch (error) {
