@@ -22,6 +22,7 @@ import notificationRoutes from './routes/notification.routes.js';
 import discountRoutes from './routes/discount.routes.js';
 import contactRoutes from './routes/contact.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import settingsRoutes from './routes/settings.routes.js';
 
 const app = express();
 
@@ -96,6 +97,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/discounts', discountRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 404 handler
 app.use(notFound);

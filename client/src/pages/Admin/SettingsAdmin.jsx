@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Save, Store, Mail, Globe, Shield, Bell, DollarSign, Truck, CheckCircle, AlertCircle } from 'lucide-react';
+import axiosClient from '../../api/axiosClient';
+import { toast } from 'react-toastify';
 
 const SettingsAdmin = () => {
   const [activeTab, setActiveTab] = useState('general');
@@ -23,8 +25,33 @@ const SettingsAdmin = () => {
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem('adminSettings');
-    if (saved) setSettings(JSON.parse(saved));
+    // Fetch settings from API
+    const fetchSettings = async () => {
+      try {
+        const response = await axiosClient.get('/settings');
+        if (response.data.success) {
+          const apiSettings = response.data.data.settings;
+          setSettings({
+            siteName: apiSettings.siteName,
+            siteDescription: apiSettings.siteDescription,
+            contactEmail: apiSettings.contactEmail,
+            contactPhone: apiSettings.contactPhone,
+            address: apiSettings.address,
+            currency: apiSettings.currency,
+            currencySymbol: apiSettings.currencySymbol,
+            taxRate: apiSettings.taxRate.toString(),
+            shippingFee: apiSettings.shippingFee.toString(),
+            freeShippingThreshold: apiSettings.freeShippingThreshold.toString(),
+            emailFrom: apiSettings.emailFrom,
+            maintenanceMode: apiSettings.maintenanceMode,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+        toast.error('Failed to load settings');
+      }
+    };
+    fetchSettings();
   }, []);
 
   const handleChange = (e) => {
@@ -42,12 +69,14 @@ const SettingsAdmin = () => {
     setMaintenanceSaving(true);
     
     try {
-      // Save to localStorage
-      const updatedSettings = { ...settings, maintenanceMode: checked };
-      localStorage.setItem('adminSettings', JSON.stringify(updatedSettings));
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Save to database via API
+      await axiosClient.put('/settings', {
+        ...settings,
+        maintenanceMode: checked,
+        taxRate: parseFloat(settings.taxRate),
+        shippingFee: parseFloat(settings.shippingFee),
+        freeShippingThreshold: parseFloat(settings.freeShippingThreshold),
+      });
       
       // Show success indicator
       setMaintenanceSaving(false);
@@ -58,22 +87,38 @@ const SettingsAdmin = () => {
         setMaintenanceSaved(false);
       }, 2000);
       
+      toast.success(`Maintenance mode ${checked ? 'enabled' : 'disabled'}`);
       console.log('✅ Maintenance mode updated:', checked ? 'ON' : 'OFF');
     } catch (error) {
       setMaintenanceSaving(false);
       console.error('Failed to update maintenance mode:', error);
+      toast.error('Failed to update maintenance mode');
+      // Revert state on error
+      setSettings(prev => ({ ...prev, maintenanceMode: !checked }));
     }
   };
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      localStorage.setItem('adminSettings', JSON.stringify(settings));
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      // Convert string values to numbers for API
+      const settingsToSave = {
+        ...settings,
+        taxRate: parseFloat(settings.taxRate),
+        shippingFee: parseFloat(settings.shippingFee),
+        freeShippingThreshold: parseFloat(settings.freeShippingThreshold),
+      };
+      
+      const response = await axiosClient.put('/settings', settingsToSave);
+      
+      if (response.data.success) {
+        setSaved(true);
+        toast.success('Settings saved successfully!');
+        setTimeout(() => setSaved(false), 3000);
+      }
     } catch (error) {
-      // Error handling
+      console.error('Error saving settings:', error);
+      toast.error(error.response?.data?.message || 'Failed to save settings');
     } finally {
       setLoading(false);
     }
@@ -108,8 +153,8 @@ const SettingsAdmin = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
-                    ? 'border-primary-600 text-primary-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-primary-600 text-primary-600 dark:border-primary-500 dark:text-primary-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
                   }`}
               >
                 <Icon size={18} />
@@ -123,30 +168,30 @@ const SettingsAdmin = () => {
       <div className="card space-y-6">
         {activeTab === 'general' && (
           <>
-            <h2 className="text-xl font-semibold flex items-center gap-2"><Store size={24} />General Settings</h2>
+            <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white"><Store size={24} />General Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Site Name</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Site Name</label>
                 <input type="text" name="siteName" value={settings.siteName} onChange={handleChange} className="input" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Contact Email</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Contact Email</label>
                 <input type="email" name="contactEmail" value={settings.contactEmail} onChange={handleChange} className="input" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Contact Phone</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Contact Phone</label>
                 <input type="tel" name="contactPhone" value={settings.contactPhone} onChange={handleChange} className="input" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Address</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Address</label>
                 <input type="text" name="address" value={settings.address} onChange={handleChange} className="input" />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-2">Description</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Description</label>
                 <textarea name="siteDescription" value={settings.siteDescription} onChange={handleChange} rows="3" className="input" />
               </div>
             </div>
-            <div className="border-t pt-6">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
               <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="flex items-start gap-3">
                   <input 
@@ -180,12 +225,12 @@ const SettingsAdmin = () => {
 
         {activeTab === 'email' && (
           <>
-            <h2 className="text-xl font-semibold flex items-center gap-2"><Mail size={24} />Email Settings</h2>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-800">Configure SMTP settings in server .env file for email functionality</p>
+            <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white"><Mail size={24} />Email Settings</h2>
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">Configure SMTP settings in server .env file for email functionality</p>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">From Email</label>
+              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">From Email</label>
               <input type="email" name="emailFrom" value={settings.emailFrom} onChange={handleChange} className="input" />
             </div>
           </>
@@ -193,10 +238,10 @@ const SettingsAdmin = () => {
 
         {activeTab === 'payment' && (
           <>
-            <h2 className="text-xl font-semibold flex items-center gap-2"><DollarSign size={24} />Payment Settings</h2>
+            <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white"><DollarSign size={24} />Payment Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Currency</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Currency</label>
                 <select name="currency" value={settings.currency} onChange={handleChange} className="input">
                   <option value="USD">US Dollar (USD)</option>
                   <option value="RWF">Rwandan Franc (RWF)</option>
@@ -204,11 +249,11 @@ const SettingsAdmin = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Currency Symbol</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Currency Symbol</label>
                 <input type="text" name="currencySymbol" value={settings.currencySymbol} onChange={handleChange} className="input" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Tax Rate (%)</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Tax Rate (%)</label>
                 <input type="number" name="taxRate" value={settings.taxRate} onChange={handleChange} className="input" min="0" max="100" />
               </div>
             </div>
@@ -217,14 +262,14 @@ const SettingsAdmin = () => {
 
         {activeTab === 'shipping' && (
           <>
-            <h2 className="text-xl font-semibold flex items-center gap-2"><Truck size={24} />Shipping Settings</h2>
+            <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white"><Truck size={24} />Shipping Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Shipping Fee (FRw)</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Shipping Fee (FRw)</label>
                 <input type="number" name="shippingFee" value={settings.shippingFee} onChange={handleChange} className="input" min="0" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Free Shipping Above (FRw)</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Free Shipping Above (FRw)</label>
                 <input type="number" name="freeShippingThreshold" value={settings.freeShippingThreshold} onChange={handleChange} className="input" />
               </div>
             </div>
@@ -233,9 +278,9 @@ const SettingsAdmin = () => {
 
         {activeTab === 'security' && (
           <>
-            <h2 className="text-xl font-semibold flex items-center gap-2"><Shield size={24} />Security Settings</h2>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800">Security settings like session timeout and max login attempts are configured in the server</p>
+            <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white"><Shield size={24} />Security Settings</h2>
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <p className="text-sm text-blue-800 dark:text-blue-200">Security settings like session timeout and max login attempts are configured in the server</p>
             </div>
           </>
         )}
