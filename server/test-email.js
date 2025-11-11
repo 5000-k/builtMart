@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { sendOTPEmail } from './src/utils/sendEmail.js';
+import { sendOTPEmail } from './utils/sendEmail.js';
 
 // Load environment variables
 dotenv.config();

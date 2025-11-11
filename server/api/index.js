@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-import app from '../src/app.js';
-import connectDB from '../src/config/db.js';
-import { configureCloudinary } from '../src/config/cloudinary.js';
-import { configurePaddle } from '../src/config/paddle.js';
-import logger from '../src/utils/logger.js';
+import app from '../app.js';
+import connectDB from '../config/db.js';
+import { configureCloudinary } from '../config/cloudinary.js';
+import { configurePaddle } from '../config/paddle.js';
+import logger from '../utils/logger.js';
 
 // Load environment variables
 dotenv.config();
