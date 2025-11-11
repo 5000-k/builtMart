@@ -11,11 +11,15 @@ dotenv.config();
 // Validate required environment variables
 const requiredEnvVars = [
   'NODE_ENV',
-  'PORT',
   'MONGODB_URI',
   'JWT_ACCESS_SECRET',
   'JWT_REFRESH_SECRET',
 ];
+
+// PORT is only required for non-serverless environments
+if (process.env.VERCEL !== '1') {
+  requiredEnvVars.push('PORT');
+}
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
