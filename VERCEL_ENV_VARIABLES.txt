@@ -1,0 +1,75 @@
+==============================================
+VERCEL ENVIRONMENT VARIABLES - COPY & PASTE
+==============================================
+
+Copy these EXACTLY into Vercel Environment Variables:
+
+----------------------------------------------
+REQUIRED VARIABLES (Must set all of these!)
+----------------------------------------------
+
+NODE_ENV=production
+
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority
+
+JWT_ACCESS_SECRET=your-super-secret-access-token-key-minimum-32-characters-long
+
+JWT_REFRESH_SECRET=your-super-secret-refresh-token-key-minimum-32-characters-long
+
+EMAIL_USER=inzunini1@gmail.com
+
+EMAIL_PASS=ckvhgbqkxqnmifdk
+
+CLIENT_URL=https://your-frontend-domain.vercel.app
+
+----------------------------------------------
+OPTIONAL VARIABLES (Add if you use them)
+----------------------------------------------
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+
+CLOUDINARY_API_KEY=your_api_key
+
+CLOUDINARY_API_SECRET=your_api_secret
+
+JWT_ACCESS_EXPIRATION=15m
+
+JWT_REFRESH_EXPIRATION=7d
+
+==============================================
+IMPORTANT NOTES:
+==============================================
+
+1. Replace "your-frontend-domain" with your actual frontend URL
+2. Replace MongoDB connection string with your actual one
+3. Generate strong secrets for JWT (min 32 characters)
+4. Email credentials are already filled (Gmail app password)
+5. Make sure MongoDB allows connections from 0.0.0.0/0
+
+==============================================
+HOW TO ADD IN VERCEL:
+==============================================
+
+1. Go to your project in Vercel
+2. Click "Settings" tab
+3. Click "Environment Variables" in sidebar
+4. For each variable above:
+   - Key: Variable name (e.g., NODE_ENV)
+   - Value: Variable value (e.g., production)
+   - Environment: Check all (Production, Preview, Development)
+   - Click "Add"
+5. Repeat for all variables
+6. Redeploy if already deployed
+
+==============================================
+VERIFICATION:
+==============================================
+
+After adding all variables:
+✅ Total required variables: 7
+✅ Email system will work
+✅ Database will connect
+✅ Authentication will work
+✅ Frontend will connect
+
+==============================================

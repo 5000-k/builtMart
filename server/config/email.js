@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
 import logger from '../utils/logger.js';
 
-// Email configuration for Gmail
+// Email configuration for Gmail (using environment variables for security)
 const emailConfig = {
   service: 'gmail',
   auth: {
-    user: 'inzunini1@gmail.com',
-    pass: 'ckvhgbqkxqnmifdk' // App password without spaces: ckvh gbqk xqnm ifdk
+    user: process.env.EMAIL_USER || 'inzunini1@gmail.com',
+    pass: process.env.EMAIL_PASS || 'ckvhgbqkxqnmifdk' // Use env variable in production!
   }
 };
 
