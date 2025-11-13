@@ -587,4 +587,144 @@ Visit ${process.env.CLIENT_URL || 'http://localhost:5173'}/products to start sho
   await sendEmail({ to: email, subject, text, html });
 };
 
+/**
+ * Send maintenance mode notification email
+ */
+export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
+  const subject = isEnabled 
+    ? '🔧 Maintenance Notice - BuildMart Hardware' 
+    : '✅ We\'re Back Online - BuildMart Hardware';
+  
+  const html = isEnabled ? `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+      <div style="background-color: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05); overflow: hidden;">
+        
+        <!-- Header with gradient -->
+        <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%); padding: 40px 30px; text-align: center;">
+          <div style="background-color: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+            <span style="font-size: 40px;">🔧</span>
+          </div>
+          <h1 style="color: white; margin: 0; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Scheduled Maintenance</h1>
+        </div>
+        
+        <!-- Content -->
+        <div style="padding: 40px 30px;">
+          <p style="color: #374151; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+            Hi <strong style="color: #f97316;">${name}</strong>,
+          </p>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
+            We wanted to let you know that <strong>BuildMart Hardware Store</strong> is currently undergoing scheduled maintenance to improve your shopping experience.
+          </p>
+          
+          <!-- Notice Box -->
+          <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 25px; border-radius: 8px; margin: 0 0 30px 0;">
+            <h2 style="color: #92400e; font-size: 20px; margin: 0 0 15px 0; font-weight: 700;">⚠️ What This Means</h2>
+            <ul style="color: #78350f; margin: 0; padding-left: 20px; line-height: 1.8; font-size: 15px;">
+              <li>Our website will be temporarily unavailable</li>
+              <li>You won't be able to place new orders during this time</li>
+              <li>Existing orders will continue to be processed normally</li>
+              <li>We're working to complete this as quickly as possible</li>
+            </ul>
+          </div>
+          
+          <!-- Reassurance -->
+          <div style="background-color: #f0fdf4; border: 2px solid #10b981; padding: 20px; border-radius: 8px; margin: 0 0 30px 0;">
+            <p style="color: #065f46; font-size: 15px; line-height: 1.6; margin: 0;">
+              <strong>✨ Good News:</strong> We're making improvements to serve you better! The site will be back online soon with enhanced features and performance.
+            </p>
+          </div>
+          
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 30px 0 0 0; text-align: center;">
+            We appreciate your patience and understanding. You'll receive another email once we're back online.
+          </p>
+          
+          <!-- Footer -->
+          <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center;">
+            <p style="color: #374151; margin: 0; font-size: 15px;">
+              Thank you for your patience,<br>
+              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+            </p>
+          </div>
+        </div>
+        
+        <!-- Brand Footer -->
+        <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; text-align: center;">
+          <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
+            © 2024 BuildMart Hardware Store. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  ` : `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+      <div style="background-color: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05); overflow: hidden;">
+        
+        <!-- Header with gradient -->
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%); padding: 40px 30px; text-align: center;">
+          <div style="background-color: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+            <span style="font-size: 40px;">✅</span>
+          </div>
+          <h1 style="color: white; margin: 0; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">We're Back Online!</h1>
+        </div>
+        
+        <!-- Content -->
+        <div style="padding: 40px 30px;">
+          <p style="color: #374151; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+            Hi <strong style="color: #f97316;">${name}</strong>,
+          </p>
+          
+          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
+            Great news! <strong>BuildMart Hardware Store</strong> is back online and ready to serve you.
+          </p>
+          
+          <!-- Success Box -->
+          <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; padding: 25px; border-radius: 8px; margin: 0 0 30px 0;">
+            <h2 style="color: #065f46; font-size: 20px; margin: 0 0 15px 0; font-weight: 700;">🎉 What's New</h2>
+            <ul style="color: #047857; margin: 0; padding-left: 20px; line-height: 1.8; font-size: 15px;">
+              <li>Improved website performance</li>
+              <li>Enhanced shopping experience</li>
+              <li>Better security features</li>
+              <li>All your favorite products are waiting!</li>
+            </ul>
+          </div>
+          
+          <!-- CTA Button -->
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${process.env.CLIENT_URL || 'http://localhost:5173'}/products" 
+               style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(249, 115, 22, 0.3);">
+              🛒 Start Shopping Now
+            </a>
+          </div>
+          
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 30px 0 0 0; text-align: center;">
+            Thank you for your patience during the maintenance period. We're excited to serve you better!
+          </p>
+          
+          <!-- Footer -->
+          <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center;">
+            <p style="color: #374151; margin: 0; font-size: 15px;">
+              Happy Shopping,<br>
+              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+            </p>
+          </div>
+        </div>
+        
+        <!-- Brand Footer -->
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; text-align: center;">
+          <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
+            © 2024 BuildMart Hardware Store. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const text = isEnabled
+    ? `Hi ${name}, BuildMart Hardware Store is currently undergoing scheduled maintenance. We'll be back online soon with improvements. Thank you for your patience.`
+    : `Hi ${name}, BuildMart Hardware Store is back online! Visit ${process.env.CLIENT_URL || 'http://localhost:5173'} to continue shopping.`;
+
+  await sendEmail({ to: email, subject, text, html });
+};
+
 export default sendEmail;

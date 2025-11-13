@@ -1,6 +1,9 @@
 import asyncHandler from '../utils/handleAsync.js';
 import { AppError } from '../middleware/errorMiddleware.js';
 import Settings from '../models/Settings.js';
+import User from '../models/User.js';
+import { sendMaintenanceModeEmail } from '../utils/sendEmail.js';
+import logger from '../utils/logger.js';
 
 /**
  * @desc    Get settings
@@ -45,6 +48,10 @@ export const updateSettings = asyncHandler(async (req, res) => {
   } = req.body;
 
   let settings = await Settings.findOne({ isSingleton: true });
+  
+  // Track if maintenance mode changed
+  const previousMaintenanceMode = settings ? settings.maintenanceMode : false;
+  const maintenanceModeChanged = maintenanceMode !== undefined && maintenanceMode !== previousMaintenanceMode;
 
   // Create if doesn't exist
   if (!settings) {
@@ -70,9 +77,43 @@ export const updateSettings = asyncHandler(async (req, res) => {
     await settings.save();
   }
 
+  // Send maintenance mode emails to all users if mode changed
+  if (maintenanceModeChanged) {
+    try {
+      // Get all users with email notifications enabled
+      const users = await User.find({
+        'notificationPreferences.emailNotifications': true,
+      }).select('email name');
+
+      logger.info(`Sending maintenance mode emails to ${users.length} users`);
+
+      // Send emails asynchronously (don't wait for all to complete)
+      const emailPromises = users.map(user => 
+        sendMaintenanceModeEmail(user.email, user.name, maintenanceMode)
+          .catch(error => {
+            logger.error(`Failed to send maintenance email to ${user.email}: ${error.message}`);
+          })
+      );
+
+      // Send emails in background
+      Promise.all(emailPromises).then(() => {
+        logger.info('All maintenance mode emails sent successfully');
+      }).catch(error => {
+        logger.error(`Error sending maintenance emails: ${error.message}`);
+      });
+
+      logger.info(`Maintenance mode ${maintenanceMode ? 'enabled' : 'disabled'} - emails queued`);
+    } catch (error) {
+      logger.error(`Error queuing maintenance emails: ${error.message}`);
+      // Don't fail the request if emails fail
+    }
+  }
+
   res.status(200).json({
     success: true,
-    message: 'Settings updated successfully',
+    message: maintenanceModeChanged 
+      ? `Settings updated successfully. Maintenance mode ${maintenanceMode ? 'enabled' : 'disabled'} - notification emails are being sent.`
+      : 'Settings updated successfully',
     data: {
       settings,
     },
