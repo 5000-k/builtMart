@@ -57,16 +57,28 @@ const ProtectedRoute = ({ children }) => {
 
 // Admin Route Component
 const AdminRoute = ({ children }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, user } = useAuth();
+  
+  // Debug logging to help identify the issue
+  console.log('🔐 Admin Route Check:', { isAuthenticated, isAdmin, user });
   
   if (!isAuthenticated) {
+    console.log('🚫 Not authenticated, redirecting to login');
     return <Navigate to="/login" replace />;
   }
   
-  if (!isAdmin) {
-    return <Navigate to="/" replace />;
+  // Check if user exists and has admin role
+  if (!user) {
+    console.log('⚠️ No user data found, redirecting to login');
+    return <Navigate to="/login" replace />;
   }
   
+  if (user.role !== 'admin') {
+    console.log('🚫 User is not admin, role:', user.role);
+    return <Navigate to="/login" replace />;
+  }
+  
+  console.log('✅ Admin access granted');
   return children;
 };
 
