@@ -1,0 +1,26 @@
+# render.yaml - Render deployment config
+# Docs: https://render.com/docs/deploy-Node-express
+
+services:
+  - type: web
+    name: builtmart-server
+    env: node
+    region: singapore
+    plan: free
+    startCommand: npm start
+    buildCommand: npm install
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      # Add remaining env vars in Render dashboard
+      # Or uncomment below and add your secrets:
+      # - key: MONGODB_URI
+      #   sync: false
+      # - key: JWT_ACCESS_SECRET
+      #   sync: false
+      # - key: JWT_REFRESH_SECRET
+      #   sync: false
+      # etc...

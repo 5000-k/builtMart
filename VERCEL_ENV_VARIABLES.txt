@@ -1,0 +1,29 @@
+==============================================
+VERCEL ENVIRONMENT VARIABLES - COPY & PASTE
+==============================================
+
+Copy these EXACTLY into Vercel Environment Variables:
+
+----------------------------------------------
+REQUIRED VARIABLES
+----------------------------------------------
+
+NODE_ENV=production
+
+MONGODB_URI=mongodb+srv://buirtmart:buirtmart@buirtmarlt.lhpcps7.mongodb.net/
+
+JWT_ACCESS_SECRET=8a9d3e46f7b58a8c12c1a8b927c3fefb8e2e5c16a9d7d93f8c68c0e3b2a66e8f
+
+JWT_REFRESH_SECRET=ad4f88b7c62d1b39f8c5a9a82eac0c173ad1b4b8b2a4cc9e13cb20d7b9357de0
+
+CLIENT_URL=https://built-mart-taupe.vercel.app
+
+EMAIL_USER=inzunini1@gmail.com
+
+EMAIL_PASSWORD=kyacswtpzzcxtjtv
+
+CLOUDINARY_CLOUD_NAME=djlgb5ehf
+
+CLOUDINARY_API_KEY=319671694448341
+
+CLOUDINARY_API_SECRET=3AqcP7s1qVSXdlPGAQSWeA6zPR4
