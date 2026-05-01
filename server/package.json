@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Backend API for Hardware E-Commerce Store",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "NODE_OPTIONS='--no-deprecation' node index.js",
     "dev": "nodemon index.js",
