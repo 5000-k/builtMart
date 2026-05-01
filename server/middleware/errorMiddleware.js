@@ -1,4 +1,4 @@
-import logger from '../utils/logger.js';
+const logger = require('../utils/logger.js');
 
 /**
  * Custom error class

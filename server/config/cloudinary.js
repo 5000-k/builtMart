@@ -1,5 +1,5 @@
-import { v2 as cloudinary } from 'cloudinary';
-import logger from '../utils/logger.js';
+const { v2 as cloudinary } = require('cloudinary');
+const logger = require('../utils/logger.js');
 
 const configureCloudinary = () => {
   try {

@@ -1,27 +1,29 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import cookieParser from 'cookie-parser';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import apiLimiter from './middleware/rateLimit.js';
-import logger from './utils/logger.js';
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware.js');
+const apiLimiter = require('./middleware/rateLimit.js');
+const logger = require('./utils/logger.js');
 
-// Import routes
-import authRoutes from './routes/auth.routes.js';
-import productRoutes from './routes/product.routes.js';
-import categoryRoutes from './routes/category.routes.js';
-import cartRoutes from './routes/cart.routes.js';
-import wishlistRoutes from './routes/wishlist.routes.js';
-import orderRoutes from './routes/order.routes.js';
-import reviewRoutes from './routes/review.routes.js';
-import userRoutes from './routes/user.routes.js';
-import adminRoutes from './routes/admin.routes.js';
-import realTimePaymentRoutes from './routes/realTimePayment.routes.js';
-import notificationRoutes from './routes/notification.routes.js';
-import discountRoutes from './routes/discount.routes.js';
-import contactRoutes from './routes/contact.routes.js';
-import uploadRoutes from './routes/upload.routes.js';
-import settingsRoutes from './routes/settings.routes.js';
+// Import configurations
+const connectDB = require('./config/db.js');
+const configureCloudinary = require('./config/cloudinary.js');
+const authRoutes = require('./routes/auth.routes.js');
+const productRoutes = require('./routes/product.routes.js');
+const categoryRoutes = require('./routes/category.routes.js');
+const cartRoutes = require('./routes/cart.routes.js');
+const wishlistRoutes = require('./routes/wishlist.routes.js');
+const orderRoutes = require('./routes/order.routes.js');
+const reviewRoutes = require('./routes/review.routes.js');
+const userRoutes = require('./routes/user.routes.js');
+const adminRoutes = require('./routes/admin.routes.js');
+const realTimePaymentRoutes = require('./routes/realTimePayment.routes.js');
+const notificationRoutes = require('./routes/notification.routes.js');
+const discountRoutes = require('./routes/discount.routes.js');
+const contactRoutes = require('./routes/contact.routes.js');
+const uploadRoutes = require('./routes/upload.routes.js');
+const settingsRoutes = require('./routes/settings.routes.js');
 
 const app = express();
 

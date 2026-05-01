@@ -1,7 +1,7 @@
-import winston from 'winston';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const winston = require('winston');
+const fs = require('fs');
+const path = require('path');
+const { fileURLToPath } = require('url');
 
 const { combine, timestamp, printf, colorize, errors } = winston.format;
 
