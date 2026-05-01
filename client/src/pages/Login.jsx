@@ -18,10 +18,11 @@ const Login = () => {
   const { isAuthenticated, isLoading, error } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
+    // Only redirect if already authenticated (not after login)
+    if (isAuthenticated && !isLoading) {
+      navigate('/', { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isLoading, navigate]);
 
   useEffect(() => {
     // Clear error when user starts typing
@@ -60,13 +61,10 @@ const Login = () => {
 
     try {
       const result = await dispatch(login(formData)).unwrap();
-      // Only navigate on successful login
-      if (result) {
-        navigate('/');
-      }
+      // Don't navigate here - useEffect will handle redirect
+      console.log('Login successful:', result);
     } catch (error) {
       // Error is stored in Redux state and displayed
-      // Don't navigate or refresh on error
       console.log('Login failed:', error);
     }
   };
