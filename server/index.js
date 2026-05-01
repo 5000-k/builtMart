@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-import app from './app.js';
-import connectDB from './config/db.js';
-import { configureCloudinary } from './config/cloudinary.js';
-import logger from './utils/logger.js';
+const dotenv = require('dotenv');
+const app = require('./app.js');
+const connectDB = require('./config/db.js');
+const { configureCloudinary } = require('./config/cloudinary.js');
+const logger = require('./utils/logger.js');
 
 // Load environment variables
 dotenv.config();
@@ -44,7 +44,7 @@ async function initializeServices() {
 // Check if running on Vercel (serverless)
 if (process.env.VERCEL === '1') {
   // Export the Express app for serverless
-  export default async function handler(req, res) {
+  module.exports = async function handler(req, res) {
     try {
       await initializeServices();
       app(req, res);
@@ -56,7 +56,7 @@ if (process.env.VERCEL === '1') {
         error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
-  }
+  };
 } else {
   // Traditional server deployment
   // Connect to database
