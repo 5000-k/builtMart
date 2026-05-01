@@ -42,7 +42,9 @@ const Products = () => {
       params.append('limit', itemsPerPage);
 
       const response = await axiosClient.get(`/products?${params.toString()}`);
-      return response.data.data;
+      
+      // Return the correct data structure for React Query
+      return response.data;
     },
   });
 

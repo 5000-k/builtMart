@@ -24,7 +24,9 @@ const ProductsAdmin = () => {
       if (selectedCategory) params.append('category', selectedCategory);
       
       const response = await axiosClient.get(`/products?${params}`);
-      return response.data.data;
+      
+      // Return: correct data structure for React Query
+      return response.data;
     },
   });
 
