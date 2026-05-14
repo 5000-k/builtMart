@@ -1,6 +1,6 @@
-import express from 'express';
-import { body } from 'express-validator';
-import {
+const express = require('express');
+const { body } = require('express-validator');
+const {
   getProducts,
   getProduct,
   createProduct,
@@ -10,10 +10,10 @@ import {
   deleteProductImage,
   getFeaturedProducts,
   getRelatedProducts,
-} from '../controllers/product.controller.js';
-import { protect, isAdmin } from '../middleware/authMiddleware.js';
-import { uploadMultiple } from '../middleware/uploadMiddleware.js';
-import validate from '../middleware/validateMiddleware.js';
+} = require('../controllers/product.controller.js');
+const { protect, isAdmin } = require('../middleware/authMiddleware.js');
+const { uploadMultiple } = require('../middleware/uploadMiddleware.js');
+const validate = require('../middleware/validateMiddleware.js');
 
 const router = express.Router();
 
@@ -40,6 +40,8 @@ router.post('/', protect, isAdmin, productValidation, validate, createProduct);
 
 // GET /products (list)
 router.get('/', getProducts);
+
+// GET /featured (specific routes before dynamic :id routes)
 router.get('/featured', getFeaturedProducts);
 
 // Other routes with :id parameter
@@ -50,4 +52,4 @@ router.delete('/:id', protect, isAdmin, deleteProduct);
 router.post('/:id/images', protect, isAdmin, uploadMultiple, uploadProductImages);
 router.delete('/:id/images/:imageId', protect, isAdmin, deleteProductImage);
 
-export default router;
+module.exports = router;
