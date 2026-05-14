@@ -1,15 +1,15 @@
-import asyncHandler from '../utils/handleAsync.js';
-import { AppError } from '../middleware/errorMiddleware.js';
-import Product from '../models/Product.js';
-import { cloudinary } from '../config/cloudinary.js';
-import logger from '../utils/logger.js';
+const asyncHandler = require('../utils/handleAsync.js');
+const { AppError } = require('../middleware/errorMiddleware.js');
+const Product = require('../models/Product.js');
+const { cloudinary } = require('../config/cloudinary.js');
+const logger = require('../utils/logger.js');
 
 /**
  * @desc    Get all products with filtering, sorting, and pagination
  * @route   GET /api/products
  * @access  Public
  */
-export const getProducts = asyncHandler(async (req, res) => {
+const getProducts = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 12,
@@ -96,7 +96,7 @@ export const getProducts = asyncHandler(async (req, res) => {
  * @route   GET /api/products/:id
  * @access  Public
  */
-export const getProduct = asyncHandler(async (req, res) => {
+const getProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // Try to find by ID first, then by slug
@@ -123,7 +123,7 @@ export const getProduct = asyncHandler(async (req, res) => {
  * @route   POST /api/products
  * @access  Private/Admin
  */
-export const createProduct = asyncHandler(async (req, res) => {
+const createProduct = asyncHandler(async (req, res) => {
   console.log('🔥 Create product request received:', req.body);
   
   const productData = { ...req.body };
@@ -211,7 +211,7 @@ export const createProduct = asyncHandler(async (req, res) => {
  * @route   PUT /api/products/:id
  * @access  Private/Admin
  */
-export const updateProduct = asyncHandler(async (req, res) => {
+const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   let product = await Product.findById(id);
@@ -257,7 +257,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
  * @route   DELETE /api/products/:id
  * @access  Private/Admin
  */
-export const deleteProduct = asyncHandler(async (req, res) => {
+const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const product = await Product.findById(id);
@@ -290,7 +290,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
  * @route   POST /api/products/:id/images
  * @access  Private/Admin
  */
-export const uploadProductImages = asyncHandler(async (req, res) => {
+const uploadProductImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const product = await Product.findById(id);
@@ -350,7 +350,7 @@ export const uploadProductImages = asyncHandler(async (req, res) => {
  * @route   DELETE /api/products/:id/images/:imageId
  * @access  Private/Admin
  */
-export const deleteProductImage = asyncHandler(async (req, res) => {
+const deleteProductImage = asyncHandler(async (req, res) => {
   const { id, imageId } = req.params;
 
   const product = await Product.findById(id);
@@ -387,7 +387,7 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
  * @route   GET /api/products/featured
  * @access  Public
  */
-export const getFeaturedProducts = asyncHandler(async (req, res) => {
+const getFeaturedProducts = asyncHandler(async (req, res) => {
   const { limit = 8 } = req.query;
 
   const products = await Product.find({ isFeatured: true, isActive: true })
@@ -408,7 +408,7 @@ export const getFeaturedProducts = asyncHandler(async (req, res) => {
  * @route   GET /api/products/:id/related
  * @access  Public
  */
-export const getRelatedProducts = asyncHandler(async (req, res) => {
+const getRelatedProducts = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { limit = 4 } = req.query;
 
@@ -433,3 +433,15 @@ export const getRelatedProducts = asyncHandler(async (req, res) => {
     },
   });
 });
+
+module.exports = {
+  getProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  uploadProductImages,
+  deleteProductImage,
+  getFeaturedProducts,
+  getRelatedProducts,
+};
