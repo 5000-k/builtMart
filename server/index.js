@@ -47,7 +47,7 @@ if (process.env.VERCEL === '1') {
   module.exports = async function handler(req, res) {
     try {
       await initializeServices();
-      app(req, res);
+      return app(req, res);
     } catch (error) {
       logger.error(`Handler error: ${error.message}`);
       return res.status(500).json({
