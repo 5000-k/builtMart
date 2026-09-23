@@ -1,5 +1,6 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import BackHome from '../components/BackHome';
 
 // Layouts
 import MainLayout from '../layouts/MainLayout';
@@ -14,6 +15,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
+import AccessDenied from '../pages/AccessDenied';
 
 // Information Pages
 import PrivacyPolicy from '../pages/PrivacyPolicy';
@@ -52,7 +54,12 @@ import MessagesAdmin from '../pages/Admin/MessagesAdmin';
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  const location = useLocation();
+
+  // Remember where the user was headed so we can send them back after login
+  return isAuthenticated ? children : (
+    <Navigate to="/login" replace state={{ from: location }} />
+  );
 };
 
 // Admin Route Component
@@ -75,7 +82,7 @@ const AdminRoute = ({ children }) => {
   
   if (user.role !== 'admin') {
     console.log('🚫 User is not admin, role:', user.role);
-    return <Navigate to="/login" replace />;
+    return <AccessDenied />;
   }
   
   console.log('✅ Admin access granted');
@@ -143,7 +150,12 @@ const AppRoutes = () => {
       </Route>
 
       {/* 404 */}
-      <Route path="*" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-4xl font-bold">404 - Page Not Found</h1></div>} />
+      <Route path="*" element={
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+          <h1 className="text-4xl font-bold">404 - Page Not Found</h1>
+          <BackHome />
+        </div>
+      } />
     </Routes>
   );
 };

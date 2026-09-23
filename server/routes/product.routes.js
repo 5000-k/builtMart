@@ -1,6 +1,6 @@
-const express = require('express');
-const { body } = require('express-validator');
-const {
+import express from 'express';
+import { body } from 'express-validator';
+import {
   getProducts,
   getProduct,
   createProduct,
@@ -10,10 +10,10 @@ const {
   deleteProductImage,
   getFeaturedProducts,
   getRelatedProducts,
-} = require('../controllers/product.controller.js');
-const { protect, isAdmin } = require('../middleware/authMiddleware.js');
-const { uploadMultiple } = require('../middleware/uploadMiddleware.js');
-const validate = require('../middleware/validateMiddleware.js');
+} from '../controllers/product.controller.js';
+import { protect, isAdmin } from '../middleware/authMiddleware.js';
+import { uploadMultiple } from '../middleware/uploadMiddleware.js';
+import validate from '../middleware/validateMiddleware.js';
 
 const router = express.Router();
 
@@ -52,4 +52,4 @@ router.delete('/:id', protect, isAdmin, deleteProduct);
 router.post('/:id/images', protect, isAdmin, uploadMultiple, uploadProductImages);
 router.delete('/:id/images/:imageId', protect, isAdmin, deleteProductImage);
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const logger = require('../utils/logger.js');
+import mongoose from 'mongoose';
+import logger from '../utils/logger.js';
 
 const connectDB = async () => {
   try {
@@ -25,7 +25,7 @@ const connectDB = async () => {
       // Mongoose 7+ no longer needs these options
       // useNewUrlParser and useUnifiedTopology are default
       maxPoolSize: 10, // Limit connection pool for serverless
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      serverSelectionTimeoutMS: 20000, // Timeout after 20s instead of 30s
     });
 
     logger.info(`MongoDB Connected: ${conn.connection.host}`);

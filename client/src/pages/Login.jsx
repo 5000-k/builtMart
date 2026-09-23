@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login, clearError } from '../features/auth/authSlice';
 import { useAuth } from '../hooks/useAuth';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 import Loader from '../components/Loader';
+import BackHome from '../components/BackHome';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -15,14 +16,15 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, error } = useAuth();
+  const location = useLocation();
+  const { isAuthenticated, isLoading, error, user } = useAuth();
 
   useEffect(() => {
     // Only redirect if already authenticated (not after login)
     if (isAuthenticated && !isLoading) {
-      navigate('/', { replace: true });
+      navigate(user?.role === 'admin' ? '/admin' : '/', { replace: true });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, isLoading, navigate, user]);
 
   useEffect(() => {
     // Clear error when user starts typing
@@ -61,8 +63,12 @@ const Login = () => {
 
     try {
       const result = await dispatch(login(formData)).unwrap();
-      // Don't navigate here - useEffect will handle redirect
-      console.log('Login successful:', result);
+      // Go back to the page the user came from (protected page that sent them here),
+      // otherwise go to the admin panel for admins or home for everyone else.
+      const loggedInUser = result?.user;
+      const from = location.state?.from?.pathname;
+      const destination = from || (loggedInUser?.role === 'admin' ? '/admin' : '/');
+      navigate(destination, { replace: true });
     } catch (error) {
       // Error is stored in Redux state and displayed
       console.log('Login failed:', error);
@@ -72,6 +78,9 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
+        <div className="mb-4 text-left">
+          <BackHome />
+        </div>
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-100 dark:border-gray-700">
           {/* Logo/Icon Section */}
           <div className="flex justify-center mb-6">

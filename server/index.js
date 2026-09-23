@@ -1,11 +1,10 @@
-const dotenv = require('dotenv');
-const app = require('./app.js');
-const connectDB = require('./config/db.js');
-const { configureCloudinary } = require('./config/cloudinary.js');
-const logger = require('./utils/logger.js');
+import 'dotenv/config';
+import app from './app.js';
+import connectDB from './config/db.js';
+import { configureCloudinary } from './config/cloudinary.js';
+import logger from './utils/logger.js';
 
 // Load environment variables
-dotenv.config();
 
 // Validate required environment variables
 const requiredEnvVars = [
@@ -41,22 +40,24 @@ async function initializeServices() {
   }
 }
 
+// Vercel serverless handler
+const vercelHandler = async function handler(req, res) {
+  try {
+    await initializeServices();
+    return app(req, res);
+  } catch (error) {
+    logger.error(`Handler error: ${error.message}`);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
 // Check if running on Vercel (serverless)
 if (process.env.VERCEL === '1') {
-  // Export the Express app for serverless
-  module.exports = async function handler(req, res) {
-    try {
-      await initializeServices();
-      return app(req, res);
-    } catch (error) {
-      logger.error(`Handler error: ${error.message}`);
-      return res.status(500).json({
-        success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
-      });
-    }
-  };
+  // Serverless: request handler exported below
 } else {
   // Traditional server deployment
   // Connect to database
@@ -102,3 +103,5 @@ if (process.env.VERCEL === '1') {
     });
   });
 }
+
+export default vercelHandler;

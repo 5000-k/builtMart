@@ -1,8 +1,8 @@
-const asyncHandler = require('../utils/handleAsync.js');
-const { AppError } = require('../middleware/errorMiddleware.js');
-const Product = require('../models/Product.js');
-const { cloudinary } = require('../config/cloudinary.js');
-const logger = require('../utils/logger.js');
+import asyncHandler from '../utils/handleAsync.js';
+import { AppError } from '../middleware/errorMiddleware.js';
+import Product from '../models/Product.js';
+import { cloudinary } from '../config/cloudinary.js';
+import logger from '../utils/logger.js';
 
 /**
  * @desc    Get all products with filtering, sorting, and pagination
@@ -434,7 +434,7 @@ const getRelatedProducts = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = {
+export {
   getProducts,
   getProduct,
   createProduct,

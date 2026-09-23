@@ -45,7 +45,7 @@ initTransporter().catch(() => {});
 export const sendVerificationEmail = async (email, code) => {
   const mailOptions = {
     from: {
-      name: 'BuildMart Hardware',
+      name: 'buirltmart',
       address: process.env.EMAIL_USER
     },
     to: email,

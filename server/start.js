@@ -1,3 +1,3 @@
 // Render startup script
-require('dotenv').config();
-require('./index.js');
+import 'dotenv/config';
+import './index.js';

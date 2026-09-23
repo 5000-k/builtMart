@@ -1,6 +1,6 @@
-const express = require('express');
-const { body } = require('express-validator');
-const {
+import express from 'express';
+import { body } from 'express-validator';
+import {
   register,
   verifyOTPCode,
   resendOTP,
@@ -11,10 +11,10 @@ const {
   forgotPassword,
   resetPassword,
   changePassword,
-} = require('../controllers/auth.controller.js');
-const { protect } = require('../middleware/authMiddleware.js');
-const { authLimiter, passwordResetLimiter } = require('../middleware/rateLimit.js');
-const validate = require('../middleware/validateMiddleware.js');
+} from '../controllers/auth.controller.js';
+import { protect } from '../middleware/authMiddleware.js';
+import { authLimiter, passwordResetLimiter } from '../middleware/rateLimit.js';
+import validate from '../middleware/validateMiddleware.js';
 
 const router = express.Router();
 

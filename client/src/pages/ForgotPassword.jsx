@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import axiosClient from '../api/axiosClient';
+import BackHome from '../components/BackHome';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -49,6 +50,7 @@ const ForgotPassword = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
+          <BackHome />
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 dark:bg-green-900">
               <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
@@ -115,6 +117,7 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
+        <BackHome />
         <div>
           <Link
             to="/login"

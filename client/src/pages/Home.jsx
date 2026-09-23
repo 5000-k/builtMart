@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
-import { useAuth } from '../hooks/useAuth';
 import { 
   ArrowRight, 
   Package, 
@@ -43,7 +42,6 @@ import {
 
 const Home = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [showPromoBanner, setShowPromoBanner] = useState(true);
   const [timeLeft, setTimeLeft] = useState({
@@ -51,13 +49,6 @@ const Home = () => {
     minutes: 59,
     seconds: 59
   });
-
-  // Redirect logged-in users to products page
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/products');
-    }
-  }, [isAuthenticated, navigate]);
 
   // Countdown timer effect
   useEffect(() => {
