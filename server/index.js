@@ -55,8 +55,8 @@ const vercelHandler = async function handler(req, res) {
   }
 };
 
-// Check if running on Vercel (serverless)
-if (process.env.VERCEL === '1') {
+// Check if running on Vercel (serverless) or AWS Lambda
+if (process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME) {
   // Serverless: request handler exported below
 } else {
   // Traditional server deployment
