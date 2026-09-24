@@ -23,21 +23,29 @@ if (missingEnvVars.length > 0) {
   }
 }
 
-// Initialize database connection (will be reused across invocations)
-let dbInitialized = false;
+// Initialize database connection (reused across invocations in one instance)
+let dbInitPromise = null;
 
 async function initializeServices() {
-  if (!dbInitialized) {
-    try {
-      await connectDB();
-      configureCloudinary();
-      dbInitialized = true;
-      logger.info('Services initialized successfully');
-    } catch (error) {
-      logger.error(`Service initialization failed: ${error.message}`);
-      throw error;
-    }
+  if (!dbInitPromise) {
+    dbInitPromise = connectDB()
+      .then(() => {
+        configureCloudinary();
+        logger.info('Services initialized successfully');
+      })
+      .catch((error) => {
+        dbInitPromise = null;
+        logger.error(`Service initialization failed: ${error.message}`);
+        throw error;
+      });
   }
+  return dbInitPromise;
+}
+
+// Kick off DB connect during instance bootstrap so cold starts are faster
+const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME;
+if (isServerless) {
+  initializeServices().catch(() => {});
 }
 
 // Vercel serverless handler
