@@ -10,10 +10,12 @@ REQUIRED VARIABLES (already set on Vercel)
 
 NODE_ENV=production
 
-# !!! WARNING !!! This MONGODB_URI is DEAD (wrong cluster hostname).
-# Replace with a LIVE Atlas connection string or every API call fails with 500.
-# Current value (dead): mongodb+srv://buirtmart:buirtmart@buirtmarlt.lhpcps7.mongodb.net/
-MONGODB_URI=<PASTE LIVE ATLAS URI HERE - e.g. mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0>
+# !!! LIVE Atlas cluster (working) !!!
+MONGODB_USERNAME=ugwanezav_db_user
+
+MONGODB_PASSWORD=TxgdPKM01PkzSxxk
+
+MONGODB_URI=mongodb+srv://ugwanezav_db_user:TxgdPKM01PkzSxxk@cluster0.ekvmgli.mongodb.net
 
 JWT_ACCESS_SECRET=8a9d3e46f7b58a8c12c1a8b927c3fefb8e2e5c16a9d7d93f8c68c0e3b2a66e8f
 
