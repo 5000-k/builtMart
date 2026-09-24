@@ -10,6 +10,9 @@ REQUIRED VARIABLES (already set on Vercel)
 
 NODE_ENV=production
 
+# Suppress Express/parseurl "url.parse()" DEP0169 warning (noise only, not an error)
+NODE_OPTIONS=--disable-warning=DEP0169
+
 # !!! LIVE Atlas cluster (working) !!!
 MONGODB_USERNAME=ugwanezav_db_user
 
