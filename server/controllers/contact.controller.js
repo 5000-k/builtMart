@@ -376,16 +376,17 @@ export const verifyMaintenanceKeyword = asyncHandler(async (req, res) => {
   try {
     decoded = jwt.verify(String(tempToken || ''), process.env.JWT_ACCESS_SECRET);
   } catch {
-    throw new AppError('Verification expired. Request a new code.', 401);
+    // 400 (not 401) so the client's global refresh/redirect interceptor doesn't kick in
+    throw new AppError('Verification expired. Request a new code.', 400);
   }
 
   if (decoded.purpose !== 'maintenance:otp') {
-    throw new AppError('Invalid verification token', 401);
+    throw new AppError('Invalid verification token', 400);
   }
 
   if (String(keyword || '') !== expectedKeyword) {
     logger.warn('Incorrect maintenance keyword attempt');
-    throw new AppError('Incorrect security keyword', 401);
+    throw new AppError('Incorrect security keyword', 403);
   }
 
   const maintenanceAccessToken = jwt.sign(

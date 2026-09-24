@@ -51,6 +51,11 @@ CLOUDINARY_API_KEY=319671694448341
 
 CLOUDINARY_API_SECRET=3AqcP7s1qVSXdlPGAQSWeA6zPR4
 
+# Maintenance Mode bypass - server-side ONLY (never ship in client bundle)
+MAINTENANCE_ADMIN_EMAIL=ugwanezav@gmail.com
+
+MAINTENANCE_KEYWORD=HwMaint-6JkLmsmvetfw_uV9
+
 ----------------------------------------------
 LIVE URLS
 ----------------------------------------------
