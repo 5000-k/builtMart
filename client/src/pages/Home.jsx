@@ -102,7 +102,7 @@ const Home = () => {
       role: "Construction Manager",
       rating: 5,
       image: "https://i.pravatar.cc/150?img=12",
-      text: "BuildMart has the best quality tools in Kigali! Mobile money payment is super convenient and delivery is always on time.",
+      text: "HardwareStore has the best quality tools in Kigali! Mobile money payment is super convenient and delivery is always on time.",
       location: "Kigali, Rwanda"
     },
     {
@@ -147,7 +147,7 @@ const Home = () => {
       role: "Architect",
       rating: 5,
       image: "https://i.pravatar.cc/150?img=20",
-      text: "BuildMart is my go-to for all construction materials. Real-time payment and instant order confirmation is perfect!",
+      text: "HardwareStore is my go-to for all construction materials. Real-time payment and instant order confirmation is perfect!",
       location: "Gisenyi, Rwanda"
     }
   ];
@@ -239,7 +239,7 @@ const Home = () => {
 
             {/* Subtitle */}
             <p className="text-xl md:text-2xl mb-10 text-orange-100 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              Rwanda's #1 Hardware Store - Kigali & Nationwide Delivery<br />
+              Rwanda's #1 HardwareStore - Kigali & Nationwide Delivery<br />
               <span className="text-yellow-300 font-bold">Pay with MTN/Airtel Money • Real-Time Confirmation</span>
             </p>
 
@@ -794,7 +794,7 @@ const Home = () => {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-4">
               <BadgeCheck size={20} className="text-orange-600 dark:text-orange-400" />
-              <span className="text-sm font-semibold text-orange-700 dark:text-orange-400">Why Choose BuildMart</span>
+              <span className="text-sm font-semibold text-orange-700 dark:text-orange-400">Why Choose HardwareStore</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Your Trusted Hardware Partner

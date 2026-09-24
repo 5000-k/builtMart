@@ -75,7 +75,7 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
               <Package className="h-8 w-8 text-primary-500" />
-              <span className="text-2xl font-bold text-white">Hardware Store</span>
+              <span className="text-2xl font-bold text-white">HardwareStore</span>
             </div>
             <p className="text-sm mb-4 leading-relaxed">
               Rwanda's #1 hardware store. Quality tools, real-time mobile money payments, fast delivery.
@@ -283,7 +283,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-6 pt-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-400">
-              &copy; {currentYear} Hardware Store. All rights reserved.
+              &copy; {currentYear} HardwareStore. All rights reserved.
             </p>
 
             <div className="flex flex-wrap items-center gap-6 text-sm">

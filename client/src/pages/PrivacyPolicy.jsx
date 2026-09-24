@@ -108,7 +108,7 @@ const PrivacyPolicy = () => {
         {/* Introduction */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 mb-8">
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-            Welcome to BuildMart Hardware Store ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
+            Welcome to HardwareStore ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
           </p>
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
             If you have any questions or concerns about this policy or our practices with regards to your personal information, please contact us at ugwanezav@gmail.com.

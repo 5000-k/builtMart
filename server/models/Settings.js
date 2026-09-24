@@ -4,7 +4,7 @@ const settingsSchema = new mongoose.Schema(
   {
     siteName: {
       type: String,
-      default: 'BuildMart Hardware Store',
+      default: 'HardwareStore',
       trim: true,
     },
     siteDescription: {

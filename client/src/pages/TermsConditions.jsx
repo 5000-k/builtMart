@@ -9,7 +9,7 @@ const TermsConditions = () => {
       icon: FileText,
       title: 'Acceptance of Terms',
       content: [
-        'By accessing and using BuildMart Hardware Store\'s website and services, you accept and agree to be bound by these Terms and Conditions.',
+        'By accessing and using HardwareStore\'s website and services, you accept and agree to be bound by these Terms and Conditions.',
         'If you do not agree to these terms, please do not use our services.',
         'We reserve the right to update these terms at any time, and your continued use constitutes acceptance of any changes.'
       ]
@@ -131,10 +131,10 @@ const TermsConditions = () => {
         {/* Introduction */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 mb-8">
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-            Welcome to BuildMart Hardware Store. These Terms and Conditions ("Terms") govern your use of our website, mobile application, and services. By accessing or using our platform, you agree to be bound by these Terms.
+            Welcome to HardwareStore. These Terms and Conditions ("Terms") govern your use of our website, mobile application, and services. By accessing or using our platform, you agree to be bound by these Terms.
           </p>
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            These Terms constitute a legally binding agreement between you and BuildMart Hardware Store Ltd, a company registered in Rwanda. Please read them carefully.
+            These Terms constitute a legally binding agreement between you and HardwareStore Ltd, a company registered in Rwanda. Please read them carefully.
           </p>
         </div>
 
@@ -170,7 +170,7 @@ const TermsConditions = () => {
           </h2>
           <div className="space-y-3">
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              All content on this platform, including text, graphics, logos, images, and software, is the property of BuildMart Hardware Store or its content suppliers and is protected by Rwanda and international copyright laws.
+              All content on this platform, including text, graphics, logos, images, and software, is the property of HardwareStore or its content suppliers and is protected by Rwanda and international copyright laws.
             </p>
             <ul className="space-y-3 ml-4">
               <li className="flex items-start gap-3">

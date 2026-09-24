@@ -123,7 +123,7 @@ export const sendVerificationEmail = async (email, code) => {
       <body>
         <div class="header">
           <h1>🔐 Maintenance Access</h1>
-          <p style="margin: 5px 0 0 0;">BuildMart Hardware Store</p>
+          <p style="margin: 5px 0 0 0;">HardwareStore</p>
         </div>
         
         <div class="content">
@@ -131,7 +131,7 @@ export const sendVerificationEmail = async (email, code) => {
           
           <p>Hello Administrator,</p>
           
-          <p>You have requested access to the BuildMart system while it's in maintenance mode. Please use the verification code below to complete the authentication process.</p>
+          <p>You have requested access to the HardwareStore system while it's in maintenance mode. Please use the verification code below to complete the authentication process.</p>
           
           <div class="code-box">
             <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px;">Your Verification Code</p>
@@ -146,7 +146,7 @@ export const sendVerificationEmail = async (email, code) => {
           <p><strong>Security Tips:</strong></p>
           <ul style="color: #4b5563;">
             <li>Never share this code with anyone</li>
-            <li>BuildMart staff will never ask for this code</li>
+            <li>HardwareStore staff will never ask for this code</li>
             <li>The code is only valid for 5 minutes</li>
             <li>Only use this code if you requested maintenance access</li>
           </ul>
@@ -155,22 +155,22 @@ export const sendVerificationEmail = async (email, code) => {
           
           <p style="margin-top: 20px;">
             <strong>Best regards,</strong><br>
-            BuildMart Security Team
+            HardwareStore Security Team
           </p>
         </div>
         
         <div class="footer">
-          <p><strong>BuildMart Hardware Store</strong></p>
+          <p><strong>HardwareStore</strong></p>
           <p>This is an automated security email. Please do not reply.</p>
           <p style="color: #9ca3af; margin-top: 10px;">
-            © 2025 BuildMart. All rights reserved.
+            © 2025 HardwareStore. All rights reserved.
           </p>
         </div>
       </body>
       </html>
     `,
     text: `
-BuildMart Maintenance Access - Verification Code
+HardwareStore Maintenance Access - Verification Code
 
 Hello Administrator,
 
@@ -186,7 +186,7 @@ Security Tips:
 If you didn't request this, please ignore this email.
 
 Best regards,
-BuildMart Security Team
+HardwareStore Security Team
     `
   };
 

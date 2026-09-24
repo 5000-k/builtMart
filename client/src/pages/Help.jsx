@@ -42,14 +42,14 @@ const Help = () => {
   };
 
   const handleWhatsAppClick = () => {
-    const message = encodeURIComponent('Hello! I need help with Hardware Store.');
+    const message = encodeURIComponent('Hello! I need help with HardwareStore.');
     window.open(`https://wa.me/${whatsappNumber.replace('+', '')}?text=${message}`, '_blank');
   };
 
   const handleEmailClick = () => {
-    const subject = encodeURIComponent('Hardware Store - Support Request');
+    const subject = encodeURIComponent('HardwareStore - Support Request');
     const body = encodeURIComponent(
-      'Hello Hardware Store Team,\n\n' +
+      'Hello HardwareStore Team,\n\n' +
       'I need assistance with:\n\n' +
       '[Please describe your issue here]\n\n' +
       'Thank you for your support!\n\n' +

@@ -94,7 +94,7 @@ const Login = () => {
               Welcome Back
             </h2>
             <p className="mt-2 text-gray-600 dark:text-gray-400">
-              Sign in to continue to BuildMart
+              Sign in to continue to HardwareStore
             </p>
           </div>
 
@@ -223,7 +223,7 @@ const Login = () => {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-medium">
-                New to BuildMart?
+                New to HardwareStore?
               </span>
             </div>
           </div>

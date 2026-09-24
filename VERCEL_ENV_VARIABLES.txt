@@ -2,28 +2,55 @@
 VERCEL ENVIRONMENT VARIABLES - COPY & PASTE
 ==============================================
 
-Copy these EXACTLY into Vercel Environment Variables:
+Copy these EXACTLY into Vercel Environment Variables (Production):
 
 ----------------------------------------------
-REQUIRED VARIABLES
+REQUIRED VARIABLES (already set on Vercel)
 ----------------------------------------------
 
 NODE_ENV=production
 
-MONGODB_URI=mongodb+srv://buirtmart:buirtmart@buirtmarlt.lhpcps7.mongodb.net/
+# !!! WARNING !!! This MONGODB_URI is DEAD (wrong cluster hostname).
+# Replace with a LIVE Atlas connection string or every API call fails with 500.
+# Current value (dead): mongodb+srv://buirtmart:buirtmart@buirtmarlt.lhpcps7.mongodb.net/
+MONGODB_URI=<PASTE LIVE ATLAS URI HERE - e.g. mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0>
 
 JWT_ACCESS_SECRET=8a9d3e46f7b58a8c12c1a8b927c3fefb8e2e5c16a9d7d93f8c68c0e3b2a66e8f
 
 JWT_REFRESH_SECRET=ad4f88b7c62d1b39f8c5a9a82eac0c173ad1b4b8b2a4cc9e13cb20d7b9357de0
 
-CLIENT_URL=https://built-mart-taupe.vercel.app
+JWT_ACCESS_EXPIRE=7d
+JWT_ADMIN_EXPIRE=15m
+JWT_REFRESH_EXPIRE=7d
 
-EMAIL_USER=inzunini1@gmail.com
+CLIENT_URL=https://hardwaremart.vercel.app
 
-EMAIL_PASSWORD=kyacswtpzzcxtjtv
+ALLOWED_ORIGINS=https://hardwaremart.vercel.app,http://localhost:5173
 
+CORS_ORIGIN=https://hardwaremart.vercel.app
+
+EMAIL_USER=vedaste20077@gmail.com
+
+EMAIL_PASSWORD=qcfidesopkkvuchs
+
+EMAIL_FROM="HardwareStore <vedaste20077@gmail.com>"
+
+SESSION_SECRET=your-session-secret-here
+
+MAX_FILE_SIZE=5242880
+
+# Cloudinary (Image Upload)
 CLOUDINARY_CLOUD_NAME=djlgb5ehf
 
 CLOUDINARY_API_KEY=319671694448341
 
 CLOUDINARY_API_SECRET=3AqcP7s1qVSXdlPGAQSWeA6zPR4
+
+----------------------------------------------
+LIVE URLS
+----------------------------------------------
+Backend:  https://hardwarestore-api.vercel.app  (Express, all /api)
+Frontend: https://hardwaremart.vercel.app       (Vite React, VITE_API_URL=https://hardwarestore-api.vercel.app/api)
+
+If you ever change the frontend location, update ALLOWED_ORIGINS / CORS_ORIGIN / CLIENT_URL above
+to its new https origin. VITE_API_URL for the frontend build is set in the "hardwarestore" project env.

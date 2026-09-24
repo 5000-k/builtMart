@@ -106,7 +106,7 @@ class MTNMomoService {
           partyIdType: 'MSISDN',
           partyId: formattedPhone,
         },
-        payerMessage: `Payment for BuildMart Order ${orderId}`,
+        payerMessage: `Payment for HardwareStore Order ${orderId}`,
         payeeNote: `Order ${orderId} - ${customerName}`,
       };
 

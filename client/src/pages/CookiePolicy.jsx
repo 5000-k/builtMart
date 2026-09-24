@@ -146,7 +146,7 @@ const CookiePolicy = () => {
             Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work more efficiently and provide information to website owners.
           </p>
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            BuildMart Hardware Store uses cookies to enhance your browsing experience, remember your preferences, and analyze how our platform is used. This Cookie Policy explains what cookies we use and why.
+            HardwareStore uses cookies to enhance your browsing experience, remember your preferences, and analyze how our platform is used. This Cookie Policy explains what cookies we use and why.
           </p>
         </div>
 

@@ -43,7 +43,10 @@ async function initializeServices() {
 // Vercel serverless handler
 const vercelHandler = async function handler(req, res) {
   try {
-    await initializeServices();
+    const isApiRequest = req.url.startsWith('/api') || req.url === '/health';
+    if (isApiRequest) {
+      await initializeServices();
+    }
     return app(req, res);
   } catch (error) {
     logger.error(`Handler error: ${error.message}`);

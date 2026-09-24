@@ -187,7 +187,7 @@ const DashboardLayout = () => {
               </Link>
             )}
             <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-              © 2025 Hardware Store
+              © 2025 HardwareStore
             </p>
           </div>
         </div>
@@ -213,7 +213,7 @@ const DashboardLayout = () => {
                   <ShoppingBag className="text-white" size={20} />
                 </div>
                 <span className="text-lg font-bold text-gray-900 dark:text-white">
-                  Hardware Store
+                  HardwareStore
                 </span>
               </Link>
             </div>

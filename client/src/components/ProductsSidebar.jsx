@@ -50,7 +50,7 @@ const ProductsSidebar = () => {
           <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" strokeWidth={2.5} />
           </div>
-          <span className="text-lg font-bold text-gray-900 dark:text-white">Hardware Store</span>
+          <span className="text-lg font-bold text-gray-900 dark:text-white">HardwareStore</span>
         </Link>
       </div>
 

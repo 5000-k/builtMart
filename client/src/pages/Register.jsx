@@ -316,7 +316,7 @@ const Register = () => {
               Create Account
             </h2>
             <p className="mt-2 text-gray-600 dark:text-gray-400">
-              Join BuildMart - It only takes a minute
+              Join HardwareStore - It only takes a minute
             </p>
           </div>
 

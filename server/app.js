@@ -145,7 +145,7 @@ app.get('/', (req, res) => {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BuiltMart Hardware Store API</title>
+      <title>HardwareStore API</title>
       <style>
         * {
           margin: 0;
@@ -263,8 +263,8 @@ app.get('/', (req, res) => {
     <body>
       <div class="container">
         <div class="logo">🛠️</div>
-        <h1>Welcome to BuiltMart</h1>
-        <p class="tagline">Hardware Store API</p>
+        <h1>Welcome to HardwareStore</h1>
+        <p class="tagline">HardwareStore API</p>
         
         <div class="quote">
           "${randomQuote}"
@@ -297,9 +297,9 @@ app.get('/', (req, res) => {
         <a href="/health" class="api-link">Check API Health</a>
         
         <p class="info">
-          <strong>BuiltMart API v1.0</strong><br>
+          <strong>HardwareStore API v1.0</strong><br>
           RESTful API for hardware e-commerce platform<br>
-          © ${new Date().getFullYear()} BuiltMart. All rights reserved.
+          © ${new Date().getFullYear()} HardwareStore. All rights reserved.
         </p>
       </div>
     </body>

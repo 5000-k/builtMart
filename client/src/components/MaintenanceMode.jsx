@@ -182,7 +182,7 @@ const MaintenanceMode = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-white/30 to-white/10 rounded-lg flex items-center justify-center">
               <Wrench size={24} className="text-white" />
             </div>
-            <span className="text-2xl font-bold drop-shadow-lg">BuildMart Hardware</span>
+            <span className="text-2xl font-bold drop-shadow-lg">HardwareStore</span>
           </div>
           <p className="text-white/80 text-sm mt-4 font-medium">
             Trusted Hardware Solutions Since 2024

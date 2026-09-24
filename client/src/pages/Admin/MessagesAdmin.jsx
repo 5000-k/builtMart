@@ -76,10 +76,10 @@ const MessagesAdmin = () => {
   const handleEmailReply = (contact) => {
     const subject = encodeURIComponent(`Re: ${contact.subject}`);
     const body = encodeURIComponent(
-      `Dear ${contact.name},\n\nThank you for contacting Hardware Store.\n\n` +
+      `Dear ${contact.name},\n\nThank you for contacting HardwareStore.\n\n` +
       `Regarding your message: "${contact.subject}"\n\n` +
       `[Your response here]\n\n` +
-      `Best regards,\nHardware Store Support Team\n` +
+      `Best regards,\nHardwareStore Support Team\n` +
       `Email: ugwanezav@gmail.com\n` +
       `Phone: +250725382459`
     );
@@ -97,9 +97,9 @@ const MessagesAdmin = () => {
 
     const message = encodeURIComponent(
       `Hello ${contact.name}!\n\n` +
-      `Thank you for contacting Hardware Store regarding: "${contact.subject}"\n\n` +
+      `Thank you for contacting HardwareStore regarding: "${contact.subject}"\n\n` +
       `We received your message and would be happy to assist you.\n\n` +
-      `Best regards,\nHardware Store Support`
+      `Best regards,\nHardwareStore Support`
     );
     // Use phone from contact form
     const whatsappNumber = contact.phone.replace(/\D/g, '');

@@ -10,7 +10,7 @@ const SettingsAdmin = () => {
   const [maintenanceSaving, setMaintenanceSaving] = useState(false);
   const [maintenanceSaved, setMaintenanceSaved] = useState(false);
   const [settings, setSettings] = useState({
-    siteName: 'BuildMart Hardware Store',
+    siteName: 'HardwareStore',
     siteDescription: 'Quality hardware and tools for professionals',
     contactEmail: 'ugwanezav@gmail.com',
     contactPhone: '+250 788 123 456',

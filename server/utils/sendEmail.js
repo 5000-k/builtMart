@@ -78,7 +78,7 @@ export const sendEmail = async ({ to, subject, text, html }) => {
  * Send welcome email
  */
 export const sendWelcomeEmail = async (email, name) => {
-  const subject = '🎉 Welcome to BuildMart Hardware!';
+  const subject = '🎉 Welcome to HardwareStore!';
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
       <div style="background-color: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05); overflow: hidden;">
@@ -88,7 +88,7 @@ export const sendWelcomeEmail = async (email, name) => {
           <div style="background-color: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
             <span style="font-size: 40px;">🎉</span>
           </div>
-          <h1 style="color: white; margin: 0; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Welcome to BuildMart!</h1>
+          <h1 style="color: white; margin: 0; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Welcome to HardwareStore!</h1>
         </div>
         
         <!-- Content -->
@@ -98,7 +98,7 @@ export const sendWelcomeEmail = async (email, name) => {
           </p>
           
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-            Thank you for joining <strong>BuildMart Hardware Store</strong>. We're excited to have you as part of our community!
+            Thank you for joining <strong>HardwareStore</strong>. We're excited to have you as part of our community!
           </p>
           
           <div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-left: 4px solid #f97316; padding: 20px; border-radius: 8px; margin: 0 0 30px 0;">
@@ -127,7 +127,7 @@ export const sendWelcomeEmail = async (email, name) => {
           <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center;">
             <p style="color: #374151; margin: 0; font-size: 15px;">
               Best regards,<br>
-              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+              <strong style="color: #f97316;">The HardwareStore Team</strong>
             </p>
           </div>
         </div>
@@ -135,13 +135,13 @@ export const sendWelcomeEmail = async (email, name) => {
         <!-- Brand Footer -->
         <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 20px; text-align: center;">
           <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
-            © 2024 BuildMart Hardware Store. All rights reserved.
+            © 2024 HardwareStore. All rights reserved.
           </p>
         </div>
       </div>
     </div>
   `;
-  const text = `Welcome to BuildMart Hardware Store! Hi ${name}, Thank you for joining us.`;
+  const text = `Welcome to HardwareStore! Hi ${name}, Thank you for joining us.`;
 
   await sendEmail({ to: email, subject, text, html });
 };
@@ -150,7 +150,7 @@ export const sendWelcomeEmail = async (email, name) => {
  * Send OTP verification email
  */
 export const sendOTPEmail = async (email, name, otp) => {
-  const subject = '🔐 Verify Your Email - BuildMart Hardware';
+  const subject = '🔐 Verify Your Email - HardwareStore';
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
       <div style="background-color: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05); overflow: hidden;">
@@ -168,7 +168,7 @@ export const sendOTPEmail = async (email, name, otp) => {
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi <strong>${name}</strong>,</p>
           
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-            Thank you for registering with <strong>BuildMart Hardware Store</strong>. To complete your registration, please use the verification code below:
+            Thank you for registering with <strong>HardwareStore</strong>. To complete your registration, please use the verification code below:
           </p>
           
           <!-- OTP Code Box -->
@@ -187,14 +187,14 @@ export const sendOTPEmail = async (email, name, otp) => {
           </div>
           
           <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 20px 0 0 0;">
-            If you didn't create an account with BuildMart Hardware Store, please ignore this email.
+            If you didn't create an account with HardwareStore, please ignore this email.
           </p>
           
           <!-- Footer -->
           <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb;">
             <p style="color: #374151; margin: 0; font-size: 15px;">
               Best regards,<br>
-              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+              <strong style="color: #f97316;">The HardwareStore Team</strong>
             </p>
           </div>
         </div>
@@ -202,7 +202,7 @@ export const sendOTPEmail = async (email, name, otp) => {
         <!-- Brand Footer -->
         <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 20px; text-align: center;">
           <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
-            © 2024 BuildMart Hardware Store. All rights reserved.
+            © 2024 HardwareStore. All rights reserved.
           </p>
         </div>
       </div>
@@ -218,7 +218,7 @@ export const sendOTPEmail = async (email, name, otp) => {
  */
 export const sendPasswordResetEmail = async (email, resetToken) => {
   const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
-  const subject = '🔑 Password Reset Request - BuildMart Hardware';
+  const subject = '🔑 Password Reset Request - HardwareStore';
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
       <div style="background-color: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05); overflow: hidden;">
@@ -236,7 +236,7 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hello,</p>
           
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-            You requested to reset your password for your <strong>BuildMart Hardware Store</strong> account.
+            You requested to reset your password for your <strong>HardwareStore</strong> account.
           </p>
           
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
@@ -271,7 +271,7 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
           <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb;">
             <p style="color: #374151; margin: 0; font-size: 15px;">
               Best regards,<br>
-              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+              <strong style="color: #f97316;">The HardwareStore Team</strong>
             </p>
           </div>
         </div>
@@ -279,7 +279,7 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
         <!-- Brand Footer -->
         <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 20px; text-align: center;">
           <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
-            © 2024 BuildMart Hardware Store. All rights reserved.
+            © 2024 HardwareStore. All rights reserved.
           </p>
         </div>
       </div>
@@ -386,7 +386,7 @@ export const sendOrderConfirmationEmail = async (email, orderDetails) => {
           <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center;">
             <p style="color: #374151; margin: 0; font-size: 15px;">
               Best regards,<br>
-              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+              <strong style="color: #f97316;">The HardwareStore Team</strong>
             </p>
           </div>
         </div>
@@ -394,7 +394,7 @@ export const sendOrderConfirmationEmail = async (email, orderDetails) => {
         <!-- Brand Footer -->
         <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 20px; text-align: center;">
           <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
-            © 2024 BuildMart Hardware Store. All rights reserved.
+            © 2024 HardwareStore. All rights reserved.
           </p>
         </div>
       </div>
@@ -488,7 +488,7 @@ export const sendOrderStatusEmail = async (email, orderId, status) => {
           <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center;">
             <p style="color: #374151; margin: 0; font-size: 15px;">
               Best regards,<br>
-              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+              <strong style="color: #f97316;">The HardwareStore Team</strong>
             </p>
           </div>
         </div>
@@ -496,7 +496,7 @@ export const sendOrderStatusEmail = async (email, orderId, status) => {
         <!-- Brand Footer -->
         <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 20px; text-align: center;">
           <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
-            © 2024 BuildMart Hardware Store. All rights reserved.
+            © 2024 HardwareStore. All rights reserved.
           </p>
         </div>
       </div>
@@ -591,13 +591,13 @@ export const sendDiscountNotificationEmail = async (email, name, discountDetails
 
         <p style="color: #374151; margin-top: 30px; font-size: 14px;">
           Happy Shopping!<br>
-          <strong>The BuildMart Hardware Team</strong>
+          <strong>The HardwareStore Team</strong>
         </p>
       </div>
       
       <!-- Footer -->
       <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 20px;">
-        © 2024 BuildMart Hardware Store. All rights reserved.
+        © 2024 HardwareStore. All rights reserved.
       </p>
     </div>
   `;
@@ -623,8 +623,8 @@ Visit ${process.env.CLIENT_URL || 'http://localhost:5173'}/products to start sho
  */
 export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
   const subject = isEnabled 
-    ? '🔧 Maintenance Notice - BuildMart Hardware' 
-    : '✅ We\'re Back Online - BuildMart Hardware';
+    ? '🔧 Maintenance Notice - HardwareStore' 
+    : '✅ We\'re Back Online - HardwareStore';
   
   const html = isEnabled ? `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
@@ -645,7 +645,7 @@ export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
           </p>
           
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-            We wanted to let you know that <strong>BuildMart Hardware Store</strong> is currently undergoing scheduled maintenance to improve your shopping experience.
+            We wanted to let you know that <strong>HardwareStore</strong> is currently undergoing scheduled maintenance to improve your shopping experience.
           </p>
           
           <!-- Notice Box -->
@@ -674,7 +674,7 @@ export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
           <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center;">
             <p style="color: #374151; margin: 0; font-size: 15px;">
               Thank you for your patience,<br>
-              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+              <strong style="color: #f97316;">The HardwareStore Team</strong>
             </p>
           </div>
         </div>
@@ -682,7 +682,7 @@ export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
         <!-- Brand Footer -->
         <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; text-align: center;">
           <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
-            © 2024 BuildMart Hardware Store. All rights reserved.
+            © 2024 HardwareStore. All rights reserved.
           </p>
         </div>
       </div>
@@ -706,7 +706,7 @@ export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
           </p>
           
           <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-            Great news! <strong>BuildMart Hardware Store</strong> is back online and ready to serve you.
+            Great news! <strong>HardwareStore</strong> is back online and ready to serve you.
           </p>
           
           <!-- Success Box -->
@@ -736,7 +736,7 @@ export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
           <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center;">
             <p style="color: #374151; margin: 0; font-size: 15px;">
               Happy Shopping,<br>
-              <strong style="color: #f97316;">The BuildMart Hardware Team</strong>
+              <strong style="color: #f97316;">The HardwareStore Team</strong>
             </p>
           </div>
         </div>
@@ -744,7 +744,7 @@ export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
         <!-- Brand Footer -->
         <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; text-align: center;">
           <p style="color: white; margin: 0; font-size: 13px; opacity: 0.9;">
-            © 2024 BuildMart Hardware Store. All rights reserved.
+            © 2024 HardwareStore. All rights reserved.
           </p>
         </div>
       </div>
@@ -752,8 +752,8 @@ export const sendMaintenanceModeEmail = async (email, name, isEnabled) => {
   `;
 
   const text = isEnabled
-    ? `Hi ${name}, BuildMart Hardware Store is currently undergoing scheduled maintenance. We'll be back online soon with improvements. Thank you for your patience.`
-    : `Hi ${name}, BuildMart Hardware Store is back online! Visit ${process.env.CLIENT_URL || 'http://localhost:5173'} to continue shopping.`;
+    ? `Hi ${name}, HardwareStore is currently undergoing scheduled maintenance. We'll be back online soon with improvements. Thank you for your patience.`
+    : `Hi ${name}, HardwareStore is back online! Visit ${process.env.CLIENT_URL || 'http://localhost:5173'} to continue shopping.`;
 
   await sendEmail({ to: email, subject, text, html });
 };
