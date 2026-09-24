@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 import asyncHandler from '../utils/handleAsync.js';
 import { AppError } from '../middleware/errorMiddleware.js';
 import User from '../models/User.js';
@@ -198,30 +199,29 @@ export const login = asyncHandler(async (req, res) => {
     throw new AppError(AUTH_MESSAGES.VALIDATION.MISSING_FIELDS, 400);
   }
 
-  // Check if user exists
   const user = await User.findOne({ email }).select('+password');
-  if (!user) {
-    logger.warn(`Failed login attempt for non-existent user: ${email} from IP: ${ip}`);
-    throw new AppError(AUTH_MESSAGES.LOGIN.USER_NOT_FOUND, 401);
+
+  // Anti-enumeration: compare the supplied password against the real hash, or a
+  // constant dummy hash when the account doesn't exist, so both paths cost the
+  // same and return an identical generic response.
+  const DUMMY_PASSWORD_HASH = '$2a$10$WvTXCYiaibSsnq8j0GIgve60q5XvmBKbMvNX9XKi7haJJ4e3qggjq';
+  const passwordMatches = await bcrypt.compare(password, user ? user.password : DUMMY_PASSWORD_HASH);
+
+  if (!user || !passwordMatches) {
+    logger.warn(`Failed login attempt for ${email} from IP: ${ip}`);
+    throw new AppError(AUTH_MESSAGES.LOGIN.INVALID_CREDENTIALS, 401);
   }
 
-  // Check if user is blocked
+  // Account-state checks only run AFTER a correct password, so they never leak
+  // account details to someone who doesn't already know the password.
   if (user.isBlocked) {
     logger.warn(`Blocked user attempted login: ${email} from IP: ${ip}`);
     throw new AppError(AUTH_MESSAGES.LOGIN.ACCOUNT_BLOCKED, 403);
   }
 
-  // Check if email is verified
   if (!user.isEmailVerified) {
     logger.warn(`Unverified user attempted login: ${email} from IP: ${ip}`);
     throw new AppError(AUTH_MESSAGES.LOGIN.EMAIL_NOT_VERIFIED, 403);
-  }
-
-  // Check password
-  const isPasswordMatch = await user.comparePassword(password);
-  if (!isPasswordMatch) {
-    logger.warn(`Failed login attempt for ${email} from IP: ${ip}`);
-    throw new AppError(AUTH_MESSAGES.LOGIN.WRONG_PASSWORD, 401);
   }
 
   // Security: Update last login info
@@ -296,10 +296,11 @@ export const logout = asyncHandler(async (req, res) => {
     logger.info(`User ${req.user.email} logged out from IP: ${ip}`);
 
     // Clear refresh token cookie with all security options
+    const isProd = process.env.NODE_ENV === 'production';
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       path: '/'
     });
 
@@ -388,33 +389,34 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) {
-    throw new AppError(AUTH_MESSAGES.PASSWORD_RESET.USER_NOT_FOUND, 404);
-  }
 
-  // Generate reset token
-  const resetToken = crypto.randomBytes(32).toString('hex');
-  const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  // Anti-enumeration: always respond identically. Only generate + send the reset
+  // email when the account actually exists; otherwise silently do nothing.
+  if (user) {
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-  user.resetPasswordToken = hashedToken;
-  user.resetPasswordExpire = Date.now() + 60 * 60 * 1000; // 1 hour
-  await user.save();
-
-  // Send reset email
-  try {
-    await sendPasswordResetEmail(user.email, resetToken);
-
-    res.status(200).json({
-      success: true,
-      message: AUTH_MESSAGES.PASSWORD_RESET.EMAIL_SENT,
-    });
-  } catch (error) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpire = Date.now() + 60 * 60 * 1000; // 1 hour
     await user.save();
 
-    throw new AppError('Failed to send password reset email. Please try again later.', 500);
+    // Send reset email
+    try {
+      await sendPasswordResetEmail(user.email, resetToken);
+    } catch (error) {
+      // Roll back so a stale link can't be used, but still return the generic response
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save();
+      logger.error(`Failed to send password reset email: ${error.message}`);
+    }
   }
+
+  res.status(200).json({
+    success: true,
+    message: AUTH_MESSAGES.PASSWORD_RESET.EMAIL_SENT,
+  });
 });
 
 /**

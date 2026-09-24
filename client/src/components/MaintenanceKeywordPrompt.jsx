@@ -8,144 +8,92 @@ const MaintenanceKeywordPrompt = ({ onCorrectKeyword }) => {
   const [step, setStep] = useState(1); // 1 = send code, 2 = verify code, 3 = keyword
   const [verificationCode, setVerificationCode] = useState('');
   const [keyword, setKeyword] = useState('');
+  const [tempToken, setTempToken] = useState(null);
   const [showKeyword, setShowKeyword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [emailVerified, setEmailVerified] = useState(false);
   const [sendingCode, setSendingCode] = useState(false);
-  const [codeExpiry, setCodeExpiry] = useState(null);
 
-  console.log('🔐 Two-Step Verification with Email Code Rendered!');
-
-  // Send verification code to admin email
+  // Send verification code to admin email (server generates + emails the OTP)
   const handleSendCode = async (e) => {
     e.preventDefault();
     setSendingCode(true);
     setError('');
-    
+
     try {
-      // Generate 6-digit code
-      const code = Math.floor(100000 + Math.random() * 900000).toString();
-      
-      // Store code in sessionStorage with 5-minute expiry
-      const expiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes
-      sessionStorage.setItem('maintenanceVerificationCode', code);
-      sessionStorage.setItem('codeExpiry', expiryTime.toString());
-      setCodeExpiry(expiryTime);
-      
-      console.log('📧 Sending verification code to email...');
-      
-      // Send email with verification code
       const response = await axiosClient.post('/contacts/send-maintenance-code', {
         email: ADMIN_EMAIL,
-        code: code
       });
-      
-      console.log('✅ Verification code sent to email successfully!');
-      
-      setSuccess(`📧 Verification code sent to ${ADMIN_EMAIL}! Check your email inbox.`);
+
+      setSuccess(`Verification code sent to ${ADMIN_EMAIL}! Check your email inbox.`);
       setStep(2);
       setSendingCode(false);
-      
-      // Clear success message after 5 seconds
+
       setTimeout(() => setSuccess(''), 5000);
     } catch (error) {
       setSendingCode(false);
-      console.error('❌ Failed to send verification code:', error);
-      console.error('❌ Error details:', error.response?.data);
-      
-      // Clear stored code on failure
-      sessionStorage.removeItem('maintenanceVerificationCode');
-      sessionStorage.removeItem('codeExpiry');
-      
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.error || 
-                          'Failed to send verification code. Please check your internet connection and try again.';
-      setError(errorMessage);
+      setError(error.response?.data?.message ||
+              error.response?.data?.error ||
+              'Failed to send verification code. Please try again.');
     }
   };
 
-  // Verify the code entered by user
-  const handleVerifyCode = (e) => {
+  // Verify the code entered by user (server-side check)
+  const handleVerifyCode = async (e) => {
     e.preventDefault();
-    console.log('🔢 Verification code submitted');
-    
-    const storedCode = sessionStorage.getItem('maintenanceVerificationCode');
-    const expiry = sessionStorage.getItem('codeExpiry');
-    
-    // Check if code expired
-    if (expiry && Date.now() > parseInt(expiry)) {
-      setError('Verification code expired. Please request a new code.');
-      sessionStorage.removeItem('maintenanceVerificationCode');
-      sessionStorage.removeItem('codeExpiry');
-      setStep(1);
-      return;
-    }
-    
-    // Verify code
-    if (verificationCode === storedCode) {
+    setError('');
+
+    try {
+      const response = await axiosClient.post('/contacts/verify-maintenance-otp', {
+        code: verificationCode,
+      });
+
+      setTempToken(response.data.data.maintenanceTempToken);
       setEmailVerified(true);
-      setError('');
       setSuccess('Email verified successfully!');
       setStep(3);
-      console.log('✅ Email verified - proceeding to keyword step');
-      
-      // Clear verification code from storage
-      sessionStorage.removeItem('maintenanceVerificationCode');
-      sessionStorage.removeItem('codeExpiry');
-      
-      setTimeout(() => setSuccess(''), 2000);
-    } else {
-      setAttempts(prev => prev + 1);
-      setError('Invalid verification code. Please try again.');
       setVerificationCode('');
-      
-      // Lock after 3 failed attempts
+
+      setTimeout(() => setSuccess(''), 2000);
+    } catch (error) {
+      setAttempts((prev) => prev + 1);
+      setError(error.response?.data?.message || 'Invalid verification code. Please try again.');
+      setVerificationCode('');
+
       if (attempts >= 2) {
         setError('Too many failed attempts. Please request a new code.');
-        sessionStorage.removeItem('maintenanceVerificationCode');
-        sessionStorage.removeItem('codeExpiry');
-        setTimeout(() => {
-          setAttempts(0);
-          setError('');
-          setStep(1);
-        }, 30000); // 30 second lockout
+        setStep(1);
+        setAttempts(0);
       }
     }
   };
 
-  const handleKeywordSubmit = (e) => {
+  const handleKeywordSubmit = async (e) => {
     e.preventDefault();
-    console.log('🔑 Keyword submitted:', keyword);
-    
-    // Check if keyword is correct
-    if (keyword.toUpperCase() === 'UGWANEZAV2020') {
-      // Store in sessionStorage (persists during session)
-      sessionStorage.setItem('maintenanceBypass', 'UGWANEZAV2020');
+
+    try {
+      const response = await axiosClient.post('/contacts/verify-maintenance-keyword', {
+        tempToken,
+        keyword,
+      });
+
+      const accessToken = response.data.data.maintenanceAccessToken;
+      sessionStorage.setItem('maintenanceAccessToken', accessToken);
       sessionStorage.setItem('bypassTime', Date.now().toString());
-      sessionStorage.setItem('adminEmail', ADMIN_EMAIL);
-      
-      // Success
+
       setError('');
       onCorrectKeyword();
-    } else {
-      // Wrong keyword
-      setAttempts(prev => prev + 1);
-      setError('Incorrect security keyword. Access denied.');
+    } catch (error) {
+      setAttempts((prev) => prev + 1);
+      setError(error.response?.data?.message || 'Incorrect security keyword. Access denied.');
       setKeyword('');
-      
-      // Lock after 3 failed attempts
+
       if (attempts >= 2) {
         setError('Too many failed attempts. Locked for security.');
-        setTimeout(() => {
-          setAttempts(0);
-          setError('');
-          // Reset to step 1 after lockout
-          setStep(1);
-          setVerificationCode('');
-          setEmailVerified(false);
-        }, 30000); // 30 second lockout
+        setStep(1);
+        setAttempts(0);
       }
     }
   };

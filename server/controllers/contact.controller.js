@@ -1,8 +1,14 @@
 import asyncHandler from '../utils/handleAsync.js';
 import { AppError } from '../middleware/errorMiddleware.js';
 import Contact from '../models/Contact.js';
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
 import logger from '../utils/logger.js';
 import { sendVerificationEmail } from '../config/email.js';
+import { generateOTP, hashOTP, verifyOTP, getOTPExpiry } from '../utils/otpUtils.js';
+
+const MAINTENANCE_ADMIN_EMAIL = () =>
+  process.env.MAINTENANCE_ADMIN_EMAIL || 'ugwanezav@gmail.com';
 
 /**
  * @desc    Create new contact message
@@ -275,56 +281,122 @@ export const getContactStats = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Send maintenance verification code to admin email
+ * @desc    Send maintenance verification code (server-generated OTP)
  * @route   POST /api/contacts/send-maintenance-code
- * @access  Public (but only sends to specific admin email)
+ * @access  Public (but only mails the configured admin address)
  */
 export const sendMaintenanceCode = asyncHandler(async (req, res) => {
-  const { email, code } = req.body;
-  
-  // Security: Only allow sending to admin email
-  const ADMIN_EMAIL = 'ugwanezav@gmail.com';
-  
-  if (email !== ADMIN_EMAIL) {
+  const { email } = req.body;
+  const adminEmail = MAINTENANCE_ADMIN_EMAIL();
+
+  // Security: Only allow sending to the configured admin email
+  if (email !== adminEmail) {
     throw new AppError('Invalid email address', 403);
   }
-  
-  if (!code || code.length !== 6) {
-    throw new AppError('Invalid verification code', 400);
+
+  const admin = await User.findOne({ email: adminEmail });
+  if (!admin) {
+    throw new AppError('Administrator account not found', 404);
   }
-  
+
+  // Server generates the OTP (never trust a code supplied by the client)
+  const otp = generateOTP();
+  admin.twoFactorCode = hashOTP(otp);
+  admin.twoFactorExpire = getOTPExpiry();
+  await admin.save();
+
   try {
-    // Send actual email with verification code
-    logger.info(`🔐 Sending maintenance verification code to ${email}: ${code}`);
-    
-    // Send email using nodemailer
-    await sendVerificationEmail(email, code);
-    
-    // Log to server console as well
-    console.log(`
-╔════════════════════════════════════════╗
-║  MAINTENANCE VERIFICATION CODE         ║
-╠════════════════════════════════════════╣
-║                                        ║
-║  ✅ EMAIL SENT SUCCESSFULLY!           ║
-║                                        ║
-║  Code: ${code}                         ║
-║  To: ${email}              ║
-║  Valid for: 5 minutes                  ║
-║                                        ║
-║  📧 Check your email inbox!            ║
-║                                        ║
-╚════════════════════════════════════════╝
-    `);
-    
-    res.status(200).json({
-      success: true,
-      message: `Verification code sent to ${email}`,
-      info: 'Check your email inbox for the 6-digit verification code'
-    });
+    await sendVerificationEmail(admin.email, otp);
+    logger.info(`Maintenance verification code sent to ${admin.email}`);
   } catch (error) {
-    logger.error(`❌ Failed to send verification code: ${error.message}`);
-    console.error('Email error details:', error);
+    logger.error(`Failed to send maintenance code: ${error.message}`);
     throw new AppError('Failed to send verification code. Please try again.', 500);
   }
+
+  res.status(200).json({
+    success: true,
+    message: `Verification code sent to ${admin.email}`,
+    info: 'Check your email inbox for the 6-digit verification code',
+  });
+});
+
+/**
+ * @desc    Verify maintenance OTP (server-side), returns a short-lived temp token
+ * @route   POST /api/contacts/verify-maintenance-otp
+ * @access  Public
+ */
+export const verifyMaintenanceOtp = asyncHandler(async (req, res) => {
+  const { code } = req.body;
+  const adminEmail = MAINTENANCE_ADMIN_EMAIL();
+
+  const admin = await User.findOne({
+    email: adminEmail,
+    twoFactorExpire: { $gt: Date.now() },
+  });
+
+  if (!admin || !verifyOTP(String(code || ''), admin.twoFactorCode)) {
+    throw new AppError('Invalid or expired verification code', 400);
+  }
+
+  // One-time use only
+  admin.twoFactorCode = undefined;
+  admin.twoFactorExpire = undefined;
+  await admin.save();
+
+  // Short-lived token authorizing only the keyword step
+  const maintenanceTempToken = jwt.sign(
+    { purpose: 'maintenance:otp', userId: admin._id },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: '5m' }
+  );
+
+  res.status(200).json({
+    success: true,
+    message: 'Email verified successfully',
+    data: { maintenanceTempToken },
+  });
+});
+
+/**
+ * @desc    Verify maintenance keyword + temp token, returns maintenance access token
+ * @route   POST /api/contacts/verify-maintenance-keyword
+ * @access  Public
+ */
+export const verifyMaintenanceKeyword = asyncHandler(async (req, res) => {
+  const { tempToken, keyword } = req.body;
+
+  // The keyword lives ONLY server-side (env var), never in the client bundle
+  const expectedKeyword = process.env.MAINTENANCE_KEYWORD;
+  if (!expectedKeyword) {
+    logger.error('MAINTENANCE_KEYWORD not configured on the server');
+    throw new AppError('Maintenance access is not configured', 500);
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(String(tempToken || ''), process.env.JWT_ACCESS_SECRET);
+  } catch {
+    throw new AppError('Verification expired. Request a new code.', 401);
+  }
+
+  if (decoded.purpose !== 'maintenance:otp') {
+    throw new AppError('Invalid verification token', 401);
+  }
+
+  if (String(keyword || '') !== expectedKeyword) {
+    logger.warn('Incorrect maintenance keyword attempt');
+    throw new AppError('Incorrect security keyword', 401);
+  }
+
+  const maintenanceAccessToken = jwt.sign(
+    { purpose: 'maintenance:access', userId: decoded.userId },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: '24h' }
+  );
+
+  res.status(200).json({
+    success: true,
+    message: 'Maintenance access granted',
+    data: { maintenanceAccessToken },
+  });
 });

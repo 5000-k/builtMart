@@ -27,8 +27,12 @@ import settingsRoutes from './routes/settings.routes.js';
 
 const app = express();
 
-// Trust proxy for rate limiting (for Vercel/Railway)
-app.set('trust proxy', 1);
+// Trust proxy ONLY when genuinely behind a forwarded proxy (Vercel edge or Render).
+// Never trust blindly: on a direct, non-proxied deployment a client could spoof
+// X-Forwarded-For and evade per-IP rate limits.
+if (process.env.VERCEL === '1' || process.env.RENDER === 'true') {
+  app.set('trust proxy', 1);
+}
 
 // Security middleware
 app.use(helmet());
@@ -41,41 +45,43 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5177',
+  'https://hardwaremart.vercel.app',
   process.env.CLIENT_URL,
   ...envOrigins,
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        logger.warn(`CORS blocked origin: ${origin}`);
-        callback(null, true); // Allow all origins in production for now
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'X-Requested-With',
-      'Accept',
-      'Origin',
-      'X-CSRF-Token',
-      'X-Api-Version',
-    ],
-    exposedHeaders: ['Content-Range', 'X-Content-Range'],
-    maxAge: 86400, // 24 hours
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (server-to-server calls, curl, native apps)
+    if (!origin) return callback(null, true);
 
-// Handle preflight requests explicitly
-app.options('*', cors());
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      // Fail closed: unknown origins get no CORS headers and are blocked by the browser
+      logger.warn(`CORS blocked origin: ${origin}`);
+      callback(null, false);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'X-CSRF-Token',
+    'X-Api-Version',
+  ],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 86400, // 24 hours
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly (same allowlist)
+app.options('*', cors(corsOptions));
 
 // Body parser middleware
 app.use(express.json({ limit: '10mb' }));

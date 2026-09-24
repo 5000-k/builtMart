@@ -36,29 +36,26 @@ const ThemeInitializer = () => {
   return null;
 };
 
-// Check if bypass keyword is valid
+// Check if bypass is a valid signed maintenance access token (24h expiry)
 const hasValidBypass = () => {
   try {
-    const keyword = sessionStorage.getItem('maintenanceBypass');
-    const bypassTime = sessionStorage.getItem('bypassTime');
-    
-    // Check if keyword exists and is correct
-    if (keyword !== 'UGWANEZAV2020') {
+    const token = sessionStorage.getItem('maintenanceAccessToken');
+    if (!token) {
       return false;
     }
-    
-    // Check if bypass is still valid (24 hour expiry)
+
+    const bypassTime = sessionStorage.getItem('bypassTime');
     if (bypassTime) {
       const elapsed = Date.now() - parseInt(bypassTime);
       const twentyFourHours = 24 * 60 * 60 * 1000;
       if (elapsed > twentyFourHours) {
         // Expired, clear it
-        sessionStorage.removeItem('maintenanceBypass');
+        sessionStorage.removeItem('maintenanceAccessToken');
         sessionStorage.removeItem('bypassTime');
         return false;
       }
     }
-    
+
     return true;
   } catch {
     return false;
@@ -90,7 +87,7 @@ const MaintenanceModeWrapper = ({ children }) => {
         setShowKeywordPrompt(false); // Don't auto-show, let them click button
         
         // Clear any existing bypass to ensure fresh check
-        sessionStorage.removeItem('maintenanceBypass');
+        sessionStorage.removeItem('maintenanceAccessToken');
         sessionStorage.removeItem('bypassTime');
       } else {
         console.log('✅ Bypass granted - site accessible');
@@ -100,7 +97,7 @@ const MaintenanceModeWrapper = ({ children }) => {
       setBypassGranted(false);
       setShowKeywordPrompt(false);
       // Clear bypass when maintenance mode is disabled
-      sessionStorage.removeItem('maintenanceBypass');
+      sessionStorage.removeItem('maintenanceAccessToken');
       sessionStorage.removeItem('bypassTime');
     }
   }, [isMaintenanceMode, userIsAdmin]);

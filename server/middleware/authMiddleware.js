@@ -18,10 +18,6 @@ export const protect = asyncHandler(async (req, res, next) => {
   else if (req.cookies.accessToken) {
     token = req.cookies.accessToken;
   }
-  // Check for refresh token in cookies (fallback)
-  else if (req.cookies.refreshToken) {
-    token = req.cookies.refreshToken;
-  }
 
   // Check if token exists
   if (!token) {
@@ -97,8 +93,6 @@ export const optionalAuth = asyncHandler(async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   } else if (req.cookies.accessToken) {
     token = req.cookies.accessToken;
-  } else if (req.cookies.refreshToken) {
-    token = req.cookies.refreshToken;
   }
 
   if (token) {

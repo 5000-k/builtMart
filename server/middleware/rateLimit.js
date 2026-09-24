@@ -66,4 +66,32 @@ export const createLimiter = rateLimit({
   }
 });
 
+// Rate limiter for requesting maintenance verification codes (prevents email flooding)
+export const maintenanceSendLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Allow 5 code requests per hour
+  message: 'Too many verification requests. Try again later.',
+  validate: { xForwardedForHeader: false },
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      message: 'Too many verification requests. Try again later.'
+    });
+  }
+});
+
+// Rate limiter for maintenance OTP/keyword verification (prevents brute force)
+export const maintenanceVerifyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 15, // Allow 15 verification attempts per 15 minutes
+  message: 'Too many verification attempts. Try again later.',
+  validate: { xForwardedForHeader: false },
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      message: 'Too many verification attempts. Try again later.'
+    });
+  }
+});
+
 export default apiLimiter;

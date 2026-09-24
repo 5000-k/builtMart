@@ -50,11 +50,10 @@ export const generateTokens = (userId, role = 'user') => {
  * @param {string} token - JWT token
  * @param {string} secret - JWT secret
  * @returns {Object} Decoded token payload
+ *
+ * Throws the original jsonwebtoken error (JsonWebTokenError / TokenExpiredError)
+ * so the global error handler can map it to a proper 401 response instead of 500.
  */
 export const verifyToken = (token, secret) => {
-  try {
-    return jwt.verify(token, secret);
-  } catch (error) {
-    throw new Error('Invalid or expired token');
-  }
+  return jwt.verify(token, secret);
 };

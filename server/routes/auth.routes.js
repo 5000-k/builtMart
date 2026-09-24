@@ -126,7 +126,7 @@ router.post('/logout', protect, logout);
 router.post('/refresh', refreshAccessToken);
 router.get('/me', protect, getMe);
 router.post('/forgot-password', passwordResetLimiter, forgotPasswordValidation, validate, forgotPassword);
-router.post('/reset-password', resetPasswordValidation, validate, resetPassword);
+router.post('/reset-password', passwordResetLimiter, resetPasswordValidation, validate, resetPassword);
 router.put('/change-password', protect, changePasswordValidation, validate, changePassword);
 
 export default router;

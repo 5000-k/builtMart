@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axiosClient from '../api/axiosClient';
 
 /**
  * Verify if maintenance mode data is valid
@@ -6,16 +7,12 @@ import { useState, useEffect } from 'react';
  */
 const verifyMaintenanceData = (settings) => {
   try {
-    // Check if settings object is valid
     if (!settings || typeof settings !== 'object') {
       return false;
     }
-
-    // Maintenance mode should be a boolean
     if (typeof settings.maintenanceMode !== 'boolean') {
       return false;
     }
-
     return true;
   } catch {
     return false;
@@ -23,52 +20,64 @@ const verifyMaintenanceData = (settings) => {
 };
 
 /**
- * Hook to check if maintenance mode is enabled
- * Checks localStorage and updates in real-time
+ * Hook to check if maintenance mode is enabled.
+ * Source of truth is the SERVER settings endpoint; localStorage is only a
+ * cached fallback so the flag can't simply be flicked off via devtools.
  */
 export const useMaintenanceMode = () => {
   const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
 
   useEffect(() => {
-    // Check maintenance mode from localStorage with validation
-    const checkMaintenanceMode = () => {
+    let cancelled = false;
+
+    const fromLocalStorage = () => {
       try {
         const settings = localStorage.getItem('adminSettings');
         if (settings) {
           const parsed = JSON.parse(settings);
-          
-          // Verify data integrity before using
           if (verifyMaintenanceData(parsed)) {
-            setIsMaintenanceMode(parsed.maintenanceMode || false);
-          } else {
-            console.warn('Invalid maintenance mode data detected');
-            setIsMaintenanceMode(false);
+            return parsed.maintenanceMode || false;
           }
-        } else {
-          setIsMaintenanceMode(false);
         }
-      } catch (error) {
-        console.error('Error reading maintenance mode:', error);
-        setIsMaintenanceMode(false);
-      }
+      } catch { /* ignore */ }
+      return false;
     };
 
-    // Initial check
-    checkMaintenanceMode();
+    const applyServerSettings = (settings) => {
+      if (!settings) return;
+      if (typeof settings.maintenanceMode !== 'boolean') return;
+      if (cancelled) return;
+      setIsMaintenanceMode(settings.maintenanceMode);
+      // Refresh local cache so the rest of the app sees the same value
+      localStorage.setItem('adminSettings', JSON.stringify(settings));
+    };
+
+    // Initial check from cache (fast paint), then server becomes authoritative
+    setIsMaintenanceMode(fromLocalStorage());
+
+    const fetchServerState = async () => {
+      try {
+        const response = await axiosClient.get('/settings');
+        const settings = response.data?.data?.settings;
+        applyServerSettings(settings);
+      } catch { /* ignore transient failures; keep current value */ }
+    };
+
+    fetchServerState();
 
     // Listen for storage changes (real-time updates across tabs)
     const handleStorageChange = (e) => {
       if (e.key === 'adminSettings') {
-        checkMaintenanceMode();
+        setIsMaintenanceMode(fromLocalStorage());
       }
     };
-
     window.addEventListener('storage', handleStorageChange);
 
-    // Poll for changes every 2 seconds (for same-tab updates)
-    const interval = setInterval(checkMaintenanceMode, 2000);
+    // Poll server every 30s (for same-tab updates + restores authority)
+    const interval = setInterval(fetchServerState, 30000);
 
     return () => {
+      cancelled = true;
       window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
@@ -84,26 +93,22 @@ export const useMaintenanceMode = () => {
  */
 export const isAdmin = () => {
   try {
-    // Check user role
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || user.role !== 'admin') {
       return false;
     }
 
-    // Verify auth token exists (additional security layer)
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     if (!token) {
       return false;
     }
 
-    // Additional validation: check if user object has required admin fields
     if (!user._id || !user.email) {
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('Admin verification error:', error);
     return false;
   }
 };
